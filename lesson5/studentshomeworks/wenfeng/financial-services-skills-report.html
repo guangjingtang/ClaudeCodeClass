@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Claude for Financial Services — Skill 全景报告</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6a6a6a;
+    --line: #e6e6e6;
+    --bg: #fafaf7;
+    --card: #ffffff;
+    --accent: #1F3864;
+    --accent-soft: #e8eef7;
+    --tag-bg: #f0ede4;
+    --tag-ink: #5a4a1e;
+    --partner: #2e7d5b;
+    --partner-soft: #e6f1eb;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif; line-height: 1.6; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 32px 80px; }
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 32px; }
+  header .eyebrow { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  header h1 { font-size: 34px; margin: 6px 0 8px; letter-spacing: -0.01em; }
+  header p { color: var(--muted); margin: 0; max-width: 800px; }
+  header .repo { margin-top: 12px; font-size: 13px; }
+  header .repo a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent-soft); }
+  nav.toc { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; margin-bottom: 40px; }
+  nav.toc h2 { font-size: 14px; margin: 0 0 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  nav.toc ul { columns: 2; column-gap: 32px; margin: 0; padding-left: 18px; }
+  nav.toc li { margin: 4px 0; font-size: 14px; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); }
+  section { margin-bottom: 56px; }
+  h2.section-title { font-size: 22px; margin: 0 0 4px; padding-bottom: 10px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; gap: 12px; }
+  h2.section-title .count { font-size: 13px; color: var(--muted); font-weight: 400; }
+  .section-lead { color: var(--muted); margin: 8px 0 24px; max-width: 820px; font-size: 14.5px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } nav.toc ul { columns: 1; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .card .head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 6px; }
+  .card h3 { font-size: 16px; margin: 0; color: var(--ink); }
+  .card h3 code { font-family: "SF Mono", Consolas, monospace; font-size: 13px; background: var(--accent-soft); color: var(--accent); padding: 1px 6px; border-radius: 3px; }
+  .card .tag { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tag-ink); background: var(--tag-bg); padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+  .card.partner .tag { background: var(--partner-soft); color: var(--partner); }
+  .card .what { font-size: 14px; color: var(--ink); margin: 8px 0 8px; }
+  .card .use { font-size: 13px; color: var(--muted); margin: 0; }
+  .card .use strong { color: var(--ink); }
+  .card .rec { font-size: 13px; color: #4a4a4a; margin: 10px 0 0; padding: 8px 10px; background: #fbfaf2; border-left: 3px solid #d6c97b; border-radius: 3px; }
+  .agents { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 18px; }
+  @media (max-width: 900px) { .agents { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px) { .agents { grid-template-columns: 1fr; } }
+  .agent { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .agent h4 { margin: 0 0 4px; font-size: 14.5px; color: var(--accent); }
+  .agent p { margin: 0; font-size: 13px; color: var(--muted); }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0 0; font-size: 12.5px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dot.core { background: var(--tag-bg); border: 1px solid #d6c97b; }
+  .dot.partner { background: var(--partner-soft); border: 1px solid var(--partner); }
+  footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 12.5px; }
+  .summary { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 22px 26px; margin-bottom: 40px; }
+  .summary h2 { margin: 0 0 10px; font-size: 18px; }
+  .summary p { margin: 0 0 10px; font-size: 14.5px; color: #333; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 14px; }
+  .stat { text-align: center; padding: 10px; background: var(--bg); border-radius: 4px; }
+  .stat .n { font-size: 22px; font-weight: 600; color: var(--accent); }
+  .stat .l { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Anthropic · Claude for Financial Services</div>
+  <h1>Skill 全景报告</h1>
+  <p>解析 <code>anthropics/financial-services</code> 仓库中所有 Skill 的定位、能力与使用建议 — 覆盖投资银行、股票研究、私募股权、基金行政、财富管理、运营合规以及 LSEG / S&amp;P Global 合作伙伴提供的市场数据 Skill。</p>
+  <div class="repo">仓库地址：<a href="https://github.com/anthropics/financial-services" target="_blank">github.com/anthropics/financial-services</a></div>
+</header>
+
+<div class="summary">
+  <h2>仓库概览</h2>
+  <p>该仓库提供 <strong>9 个端到端 Agent</strong>（如 Pitch Agent、Earnings Reviewer、GL Reconciler 等）和 <strong>9 个按业务线分组的 Vertical Plugin</strong>。Agent 是自包含的工作流；Vertical Plugin 是可单独安装的能力集合。所有 Skill 既可通过 Claude Cowork 插件安装，也可经 Claude Managed Agents API 部署。</p>
+  <p><strong>使用建议：</strong>如果只需要某项具体能力（例如 <code>/dcf</code>、<code>/comps</code>），直接装对应的 Vertical Plugin；如果要跑完整流程（如「从草稿到带品牌的 pitch book」），装对应的 Agent Plugin。</p>
+  <div class="stats">
+    <div class="stat"><div class="n">9</div><div class="l">Agents</div></div>
+    <div class="stat"><div class="n">9</div><div class="l">Vertical Plugins</div></div>
+    <div class="stat"><div class="n">66</div><div class="l">Unique Skills</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Partner Packs</div></div>
+  </div>
+  <div class="legend">
+    <span><span class="dot core"></span>核心 Skill（Anthropic 自建）</span>
+    <span><span class="dot partner"></span>合作伙伴 Skill（LSEG / S&amp;P Global）</span>
+  </div>
+</div>
+
+<nav class="toc">
+  <h2>目录</h2>
+  <ul>
+    <li><a href="#agents">9 个端到端 Agent</a></li>
+    <li><a href="#equity-research">Equity Research（股票研究）</a></li>
+    <li><a href="#financial-analysis">Financial Analysis（财务建模与制作）</a></li>
+    <li><a href="#fund-admin">Fund Admin（基金行政）</a></li>
+    <li><a href="#investment-banking">Investment Banking（投资银行）</a></li>
+    <li><a href="#operations">Operations（运营 / KYC）</a></li>
+    <li><a href="#private-equity">Private Equity（私募股权）</a></li>
+    <li><a href="#wealth-management">Wealth Management（财富管理）</a></li>
+    <li><a href="#lseg">LSEG 合作 Skill（固收 / FX / 利率）</a></li>
+    <li><a href="#spglobal">S&amp;P Global 合作 Skill</a></li>
+  </ul>
+</nav>
+
+<section id="agents">
+  <h2 class="section-title">9 个端到端 Agent <span class="count">完整工作流，自带所需 Skills</span></h2>
+  <p class="section-lead">每个 Agent 是为一类具体岗位设计的：装一个就能跑完整的工作流。下面是高层定位；它们底层调用的 Skill 在后续小节中详细列出。</p>
+  <div class="agents">
+    <div class="agent"><h4>Pitch Agent</h4><p>覆盖与咨询：从 comps、precedents、LBO 一直做到带品牌的 pitch deck。</p></div>
+    <div class="agent"><h4>Meeting Prep Agent</h4><p>客户会议前的简报包 —— 投顾 / WM 场景下用得最多。</p></div>
+    <div class="agent"><h4>Market Researcher</h4><p>给一个赛道或主题，输出行业概览、竞争格局、可比公司、想法清单。</p></div>
+    <div class="agent"><h4>Earnings Reviewer</h4><p>电话会 + 财报 → 更新模型 → 草拟研报。</p></div>
+    <div class="agent"><h4>Model Builder</h4><p>DCF、LBO、三表、Comps，直接在 Excel 中实时构建。</p></div>
+    <div class="agent"><h4>Valuation Reviewer</h4><p>导入 GP 包，跑估值模板，整理 LP 报告。</p></div>
+    <div class="agent"><h4>GL Reconciler</h4><p>找出对账差异、定位根因、按流程提交签字。</p></div>
+    <div class="agent"><h4>Month-End Closer</h4><p>权责发生制、滚动表、差异说明 —— 整套月结。</p></div>
+    <div class="agent"><h4>Statement Auditor</h4><p>LP 报表派发前做最后一道审计。</p></div>
+  </div>
+  <p class="section-lead" style="margin-top:16px;">第 10 个 Agent <strong>KYC Screener</strong> 处理入职文档与规则引擎，对应下方 Operations 章节。</p>
+</section>
+
+<section id="equity-research">
+  <h2 class="section-title">Equity Research <span class="count">9 个 Skill · 股票研究</span></h2>
+  <p class="section-lead">面向卖方 / 买方研究员的全周期工具：日常晨会 → 财报前后 → 行业深度 → 持仓回顾。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>catalyst-calendar</code></h3><span class="tag">事件追踪</span></div>
+      <p class="what">为覆盖股票池维护一份「催化剂日历」：财报日、产品发布、监管决定、宏观事件。</p>
+      <p class="use"><strong>触发：</strong>"catalyst calendar"、"upcoming events"、"earnings calendar"。</p>
+      <p class="rec">建议在每周一上午跑一次，配合 <code>morning-note</code> 提前布局 1–4 周内的关键事件。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>earnings-analysis</code></h3><span class="tag">财报后</span></div>
+      <p class="what">财报已发布的覆盖公司，生成 8–12 页、3000–5000 字的研究更新 —— 含 Beat/Miss 分析、估计调整、论点修正。</p>
+      <p class="use"><strong>触发：</strong>"earnings update"、"Q1/Q2/Q3/Q4 results"、"post-earnings report"。</p>
+      <p class="rec">输出长度严格控制；适合「24–48 小时内交付」的快速研报场景。需要全面初次覆盖请用 <code>initiating-coverage</code>。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>earnings-preview</code></h3><span class="tag">财报前</span></div>
+      <p class="what">财报前定位分析：估计建模、情景框架、关键指标关注列表 —— 设置 Bull / Bear 场景。</p>
+      <p class="use"><strong>触发：</strong>"earnings preview"、"pre-earnings"、"what to watch for [company]"。</p>
+      <p class="rec">与 <code>earnings-analysis</code> 成对使用：preview 前置 → 财报当日复盘 → analysis 输出。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>idea-generation</code></h3><span class="tag">选股</span></div>
+      <p class="what">系统化选股：量化筛选 + 主题研究 + 模式识别，输出新的多 / 空头机会。</p>
+      <p class="use"><strong>触发：</strong>"stock screen"、"find ideas"、"pitch me something"。</p>
+      <p class="rec">先用 <code>sector-overview</code> 定方向再跑此 Skill，命中率更高；筛出的票直接进 <code>thesis-tracker</code>。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>initiating-coverage</code></h3><span class="tag">深度研报</span></div>
+      <p class="what">机构级别的初次覆盖报告，按 5 步工作流执行：公司研究 → 财务建模 → 估值 → 制图 → 报告组装。每步必须单独跑、验证前置依赖。</p>
+      <p class="use"><strong>触发：</strong>"initiation report"、"initiate coverage on [company]"。</p>
+      <p class="rec">这是仓库里最重的研究 Skill，跑完整 5 步至少要数小时。强制「One Task at a Time」，不要试图一把梭。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>model-update</code></h3><span class="tag">模型维护</span></div>
+      <p class="what">把新数据塞进模型 —— 财报实际值、新指引、宏观变化、假设调整。会重算估值并标出实质性变化。</p>
+      <p class="use"><strong>触发：</strong>"update model"、"plug earnings"、"new guidance"。</p>
+      <p class="rec">财报当晚的标配；和 <code>earnings-analysis</code> 联动使用 —— 一个更新数字、一个出研报。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>morning-note</code></h3><span class="tag">日报</span></div>
+      <p class="what">早会用的简短交易日报：隔夜事件 + 交易思路 + 关键日程；为 7:00 AM 晨会量身打造。</p>
+      <p class="use"><strong>触发：</strong>"morning note"、"morning meeting"、"what happened overnight"。</p>
+      <p class="rec">每个交易日跑一次；最好用 cron 或定时器在 6:30 触发，留半小时人工 review。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>sector-overview</code></h3><span class="tag">行业研究</span></div>
+      <p class="what">综合性的行业 / 主题报告：市场规模、竞争格局、核心玩家、主线趋势。深度 5–30 页可控。</p>
+      <p class="use"><strong>触发：</strong>"sector overview"、"industry deep dive"、"thematic research"。</p>
+      <p class="rec">客户端材料、新覆盖启动、内部知识库都能用 —— 起手要先和用户约定「中性扫描 vs 主题论点」。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>thesis-tracker</code></h3><span class="tag">持仓管理</span></div>
+      <p class="what">为持仓 / Watchlist 维护投资论点：跟踪关键数据点、催化剂、里程碑；检查论点是否仍成立。</p>
+      <p class="use"><strong>触发：</strong>"update thesis for [company]"、"is my thesis still intact"。</p>
+      <p class="rec">每次 <code>earnings-analysis</code> 或重大事件后立刻更新，避免「论点漂移」。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="financial-analysis">
+  <h2 class="section-title">Financial Analysis <span class="count">13 个 Skill · 财务建模与文档生产</span></h2>
+  <p class="section-lead">最通用的一个 vertical：估值模型、表格清洗、稿件审计、PPT/Excel 制作 —— 是其他 vertical 的「公共底座」。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>3-statement-model</code></h3><span class="tag">建模</span></div>
+      <p class="what">填充三表模型模板（IS / BS / CF），强制使用公式而非硬编码值，并逐步与用户确认每个区块。</p>
+      <p class="use"><strong>触发：</strong>"fill out 3-statement model"、"populate IS/BS/CF"。</p>
+      <p class="rec">铁律：除「历史值」与「假设驱动」外，所有派生单元格必须是 Excel 公式 —— 这是后续 sensitivity / 场景能跑通的前提。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>audit-xls</code></h3><span class="tag">质检</span></div>
+      <p class="what">对电子表格做公式准确性审计 —— 范围可选「单元 / 单 sheet / 整本模型」；后者会做 BS 平衡、Cash tie-out 等完整性检查。</p>
+      <p class="use"><strong>触发：</strong>"audit this sheet"、"model won't balance"、"debug model"。</p>
+      <p class="rec">DCF / LBO / Merger 模型交付 IC 前的必跑一步；选 "model" 范围才会触发完整体检。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>clean-data-xls</code></h3><span class="tag">数据清洗</span></div>
+      <p class="what">清洗脏数据 —— 去空白、统一大小写、文本转数字、统一日期、去重、标记混合类型列。</p>
+      <p class="use"><strong>触发：</strong>"clean this data"、"normalize this data"、"dedupe"。</p>
+      <p class="rec">放在分析 / 建模流水线的最前面；保留原数据为「helper column」模式，便于回溯。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>competitive-analysis</code></h3><span class="tag">竞品</span></div>
+      <p class="what">两阶段竞品 deck：先 scope（公司圈定、深度、是否投资语境），再生产 —— 涉及市场地图、对手深扒、对比分析、战略综合。</p>
+      <p class="use"><strong>触发：</strong>"competitive landscape"、"benchmark X against peers"、"market map"。</p>
+      <p class="rec">「投资 memo」和「战略评估」两种深度差别很大，开始前一定要先和用户约定 scope。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>comps-analysis</code></h3><span class="tag">估值</span></div>
+      <p class="what">机构级别的可比公司分析：运营指标 + 估值倍数 + 统计基准。强制走数据源优先级：MCP（Kensho / FactSet / Daloopa）&gt; 机构来源 &gt; 公开搜索。</p>
+      <p class="use"><strong>触发：</strong>"comps"、"trading multiples"、"peer valuation"。</p>
+      <p class="rec">对私有公司、综合性集团、困境企业、Pre-revenue 启动器 —— 不要硬用，应换 DCF 或场景估值。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>dcf-model</code></h3><span class="tag">估值</span></div>
+      <p class="what">投行级 DCF 模型：从 SEC 文件拉数据、做现金流预测、WACC、敏感性分析，输出含执行摘要的 Excel 模型。</p>
+      <p class="use"><strong>触发：</strong>"DCF model"、"intrinsic value"、"terminal value"。</p>
+      <p class="rec">Office JS / Python 双环境支持 —— 在 Excel 加载项里跑用 Office JS，离线生成 .xlsx 用 openpyxl + recalc。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>deck-refresh</code></h3><span class="tag">PPT 更新</span></div>
+      <p class="what">用新数字「刷新」现有 deck —— 季度更新、财报更换、Comps roll、市场数据 rebase。保留原格式，只换数值。</p>
+      <p class="use"><strong>触发：</strong>"update the deck with Q4 numbers"、"refresh the comps"、"swap in the new earnings"。</p>
+      <p class="rec">强制 4 阶段，第 3 阶段是用户审批 gate —— 不要在用户看到 mapping 前去改 deck。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>ib-check-deck</code></h3><span class="tag">QC</span></div>
+      <p class="what">投行 deck 的最终质检：跨 slide 的数字一致性、数据与叙述对齐、IB 语言规范、视觉与格式。只读不改。</p>
+      <p class="use"><strong>触发：</strong>"check my deck"、"is this client-ready"、"reconcile figures across slides"。</p>
+      <p class="rec">发给客户前的最后一道关卡；它不修改，你拿到报告后再决定改不改。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>lbo-model</code></h3><span class="tag">PE 建模</span></div>
+      <p class="what">完整填充 LBO 模板：Sources &amp; Uses、运营模型、Debt Schedule、Returns Analysis；遵循专业格式标准。</p>
+      <p class="use"><strong>触发：</strong>"LBO model"、"leveraged buyout model"、"sponsor returns"。</p>
+      <p class="rec">永远优先用用户给的模板 —— 哪怕模板看起来繁琐，也不要「从零构建」。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>ppt-template-creator</code></h3><span class="tag">元 Skill</span></div>
+      <p class="what">「Skill 的 Skill」—— 把用户的 PowerPoint 模板转成一个独立的可复用 Skill；不是用来直接出 deck。</p>
+      <p class="use"><strong>触发：</strong>"turn this template into a skill"、"make a reusable skill from my .pptx"。</p>
+      <p class="rec">只在希望长期复用模板时用；出一张实际 deck 请用 <code>pptx-author</code> 或 <code>pitch-deck</code>。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>pptx-author</code></h3><span class="tag">无头 PPT</span></div>
+      <p class="what">在 managed-agent / CMA 模式下，没有 Office App 时生成 .pptx 文件 —— 写到 <code>./out/&lt;name&gt;.pptx</code>。</p>
+      <p class="use"><strong>触发：</strong>headless 环境下任何需要 PPT 输出的请求。</p>
+      <p class="rec">基础设施 Skill；和 <code>xlsx-author</code> 是一对。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>skill-creator</code></h3><span class="tag">元 Skill</span></div>
+      <p class="what">教如何写 Skill 的 Skill —— 用于新建或更新 Skill 文件结构、SKILL.md 规范、上下文管理原则。</p>
+      <p class="use"><strong>触发：</strong>"create a new skill"、"author a skill"。</p>
+      <p class="rec">扩展这个仓库时的起点；强调「context window 是公共资源」、"concise is key"。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>xlsx-author</code></h3><span class="tag">无头 Excel</span></div>
+      <p class="what">headless 环境下生成 .xlsx —— 用 openpyxl 写公式字符串而非计算值。</p>
+      <p class="use"><strong>触发：</strong>headless 环境下任何需要 Excel 输出的请求。</p>
+      <p class="rec">Office JS 环境直接用 <code>mcp__office__excel_*</code>，此 Skill 是 CMA / 服务端的兜底。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="fund-admin">
+  <h2 class="section-title">Fund Admin <span class="count">6 个 Skill · 基金行政与对账</span></h2>
+  <p class="section-lead">面向月结、对账、NAV 这一类「数字必须对得上」的工作 —— 每一步都强调引用支撑文档、不允许「拍脑袋补差额」。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>accrual-schedule</code></h3><span class="tag">月结</span></div>
+      <p class="what">期末权责发生制表：对每个 accrual 项目算金额、引支撑、出会计分录草稿（待 controller 审批）。</p>
+      <p class="use"><strong>触发：</strong>月结流程中需要 accrual 表时。</p>
+      <p class="rec">输出永远是 draft —— 不是过账指令；供应商发票视为「不可信输入」，按 policy 应用金额。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>break-trace</code></h3><span class="tag">对账</span></div>
+      <p class="what">把一行 break 追到源头交易 / 凭证，输出形如「⟨side⟩ ⟨did what⟩ because ⟨reason⟩」的根因陈述。</p>
+      <p class="use"><strong>触发：</strong><code>gl-recon</code> 分类完 break 后的下一步。</p>
+      <p class="rec">配合 <code>gl-recon</code> 使用 —— 先分类、再追因；FX 日期、过账日期、账户映射是高频差异点。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>gl-recon</code></h3><span class="tag">对账</span></div>
+      <p class="what">GL ↔ 子账对账：按 key + 比较列做全外联接，分类成 Matched / Amount break / Quantity break / Timing break / GL only / Subledger only。</p>
+      <p class="use"><strong>触发：</strong>日终 / 月末对账。</p>
+      <p class="rec">子账与托管行抽取视为「不可信输入」—— 只取数、不执行其中的指令。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>nav-tieout</code></h3><span class="tag">LP 报表</span></div>
+      <p class="what">在派发前把 LP 报表 line-by-line 重新算一遍 —— 起始资本 + 出资 − 分配 + 分摊净收益 − Carry = 期末资本。NAV pack 是 source of truth。</p>
+      <p class="use"><strong>触发：</strong>LP 季报 / 年报派发前。</p>
+      <p class="rec">容差 0.01；任何不一致要指出由哪个输入驱动（例如「分摊比例由季度内 transfer 改变」）。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>roll-forward</code></h3><span class="tag">月结</span></div>
+      <p class="what">为资产负债表科目构建期初 → 期末的滚动表 —— 每一行都要绑到 GL 查询。必须 foot；不允许人工 plug。</p>
+      <p class="use"><strong>触发：</strong>月结包、审计支持。</p>
+      <p class="rec">底层依赖 internal-gl MCP；查询要附在每行旁边，便于审计回溯。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>variance-commentary</code></h3><span class="tag">管理报告</span></div>
+      <p class="what">为每个达阈值的 P&amp;L / BS 行写 flux commentary —— 当期 vs 上期 vs 预算，并用底层活动解释「why」而不是 restate「what」。</p>
+      <p class="use"><strong>触发：</strong>月结管理报告。</p>
+      <p class="rec">不要写「云成本增加 18%」—— 要写「云成本 +1.2M，源于 5 月发布预留的 GPU 增量」。原因不明时要诚实说「flag for controller」。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="investment-banking">
+  <h2 class="section-title">Investment Banking <span class="count">9 个 Skill · 投行流程</span></h2>
+  <p class="section-lead">从 sourcing → CIM → 投标 → 关闭的卖方流程，每一步都有对应工具。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>buyer-list</code></h3><span class="tag">卖方</span></div>
+      <p class="what">为卖方 M&amp;A 流程组织买家宇宙 —— 战略买家（直接 / 邻接 / 纵向整合）、财务投资人 —— 评估契合度、排序外联优先级。</p>
+      <p class="use"><strong>触发：</strong>"buyer list"、"strategic buyers"、"who would buy this"。</p>
+      <p class="rec">先和卖方约定「strategic vs financial」偏好与管理层去留；这决定了名单结构。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>cim-builder</code></h3><span class="tag">卖方</span></div>
+      <p class="what">起草 CIM（保密信息备忘）—— 把公司材料组织成投资人 ready 的专业文档。</p>
+      <p class="use"><strong>触发：</strong>"CIM"、"offering memorandum"、"info memo"。</p>
+      <p class="rec">先要齐管理层 ppt / 历史财务 / 预算 / QofE，再开工 —— 数据空缺会反复返工。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>datapack-builder</code></h3><span class="tag">PE / IB</span></div>
+      <p class="what">把 CIM / 招股书 / 10-K / 网搜 / MCP 数据「正常化」成 IC-ready 的 Excel 数据包；强制 Currency / Number 格式规则、追溯到源页码。</p>
+      <p class="use"><strong>触发：</strong>"build a datapack"、"normalize this CIM data"。</p>
+      <p class="rec">每个数字必须能追到源页面 —— 这是后续所有衍生分析的基础。零容忍硬编码。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>deal-tracker</code></h3><span class="tag">流程</span></div>
+      <p class="what">多个 live deal 的 pipeline 视图：里程碑、deadline、动作项、状态更新。</p>
+      <p class="use"><strong>触发：</strong>"deal tracker"、"weekly deal review"、"deal pipeline"。</p>
+      <p class="rec">每周固定时间跑一次（如周一早会前），让逾期项目浮出来。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>merger-model</code></h3><span class="tag">建模</span></div>
+      <p class="what">Accretion / Dilution 分析：Pro forma EPS、协同效应敏感性、PPA。</p>
+      <p class="use"><strong>触发：</strong>"merger model"、"accretion dilution"、"pro forma EPS"。</p>
+      <p class="rec">现金 / 股权 mix、新增债务、协同释放时间表 —— 全部参数化，便于做敏感性。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>pitch-deck</code></h3><span class="tag">PPT 填充</span></div>
+      <p class="what">投行 pitch deck 模板填充：从源文件（Excel / CSV）把数据塞进现有 slide 布局；不从零造 deck。</p>
+      <p class="use"><strong>触发：</strong>用户提供模板和源数据，要求填充。</p>
+      <p class="rec">从零做 deck 请用 <code>pptx-author</code>；本 Skill 专攻「模板填充」这一窄场景。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>process-letter</code></h3><span class="tag">卖方</span></div>
+      <p class="what">起草 process letter / IOI 指令 / 终轮投标信 / 管理层会议邀请。</p>
+      <p class="use"><strong>触发：</strong>"process letter"、"bid instructions"、"final round letter"。</p>
+      <p class="rec">通常和 <code>cim-builder</code>、<code>teaser</code> 一起作为「卖方流程起始包」。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>strip-profile</code></h3><span class="tag">公司简介</span></div>
+      <p class="what">为 pitch book / deal 材料生成 1–4 页的公司简介（strip profile）—— 四象限布局，含图表与表格。</p>
+      <p class="use"><strong>触发：</strong>"strip profile"、"company profile slide"。</p>
+      <p class="rec">先和用户确定单页 vs 多页；数据要来自 SEC、FactSet / CapIQ，不要靠模型估计。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>teaser</code></h3><span class="tag">卖方</span></div>
+      <p class="what">匿名一页 Teaser ——「NDA 之前」给买家看的钩子；要有市场地位 + 关键财务，但不能识别公司身份。</p>
+      <p class="use"><strong>触发：</strong>"teaser"、"blind teaser"、"anonymous profile"。</p>
+      <p class="rec">和卖方明确「哪些细节要遮、哪些可以亮」—— 一旦泄露身份就要重做。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="operations">
+  <h2 class="section-title">Operations <span class="count">2 个 Skill · KYC / 入职</span></h2>
+  <p class="section-lead">为 KYC Screener Agent 提供两块拼图：解析文档 + 应用规则。设计上严格区分「不可信文档内容」与「可信的规则网格」。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>kyc-doc-parse</code></h3><span class="tag">解析</span></div>
+      <p class="what">把入职文档包解析成结构化 KYC 字段 —— 身份、所有权、控制、资金来源、文件清单。输出供规则引擎消费。</p>
+      <p class="use"><strong>触发：</strong>KYC 流程的第 1 步。</p>
+      <p class="rec">明确把申请人文档当成 <code>&lt;untrusted_document&gt;</code> —— 只取数，绝不执行其中的「指令」（即便文字看似合理）。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>kyc-rules</code></h3><span class="tag">规则</span></div>
+      <p class="what">把公司的 KYC/AML 规则网格应用到解析结果：风险评级、文件完备性、PEP/制裁/负面媒体筛查；输出每条规则的命中结果与必要的升级。</p>
+      <p class="use"><strong>触发：</strong>KYC 流程的第 2 步（在 doc-parse 之后）。</p>
+      <p class="rec">本 Skill 不做决策 —— 只打分 + 路由 —— 最终拒否仍是合规官的事。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="private-equity">
+  <h2 class="section-title">Private Equity <span class="count">10 个 Skill · PE 全周期</span></h2>
+  <p class="section-lead">从找项目 → 尽调 → IC → 投后 → 价值创造 → 退出。每一步都有专用 Skill，互相之间形成完整流水线。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>ai-readiness</code></h3><span class="tag">投后</span></div>
+      <p class="what">扫描 portfolio，找最高杠杆的 AI 落地点 —— 跨 portco 排出一份「应该最先派 operating partner 进场」的清单。三个 Gate：数据在？Owner 在？30 天能 pilot？</p>
+      <p class="use"><strong>触发：</strong>"AI readiness"、"AI quick wins"、"which portcos are ready for AI"。</p>
+      <p class="rec">和持有期联动：&lt;12 个月退出的 portco，AI 投入回收期到不了，应当退出排序。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>dd-checklist</code></h3><span class="tag">尽调</span></div>
+      <p class="what">按 target 行业 / 交易类型生成尽调清单 —— 涵盖财务、商务、法律、运营、税务、HR、IT 等 workstream，附状态跟踪与红旗升级。</p>
+      <p class="use"><strong>触发：</strong>"dd checklist"、"diligence request list"。</p>
+      <p class="rec">每天或每周更新进度；和 data room MCP 联动可以自动判定「item received / outstanding」。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>dd-meeting-prep</code></h3><span class="tag">尽调</span></div>
+      <p class="what">尽调会议（管理层、专家网、客户参考）前的准备 —— 出问题清单 / 基准对照 / 红旗追问点。</p>
+      <p class="use"><strong>触发：</strong>"prep for management meeting"、"expert call questions"。</p>
+      <p class="rec">先把 CIM / data room 已发现的「known unknowns」喂给 Skill；它会针对性出问题。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>deal-screening</code></h3><span class="tag">入口</span></div>
+      <p class="what">对 inbound deal flow 做快速筛选：从 CIM / teaser 抽要素，套基金投资标准，输出一页筛选 memo。</p>
+      <p class="use"><strong>触发：</strong>"screen this deal"、"should we look at this"。</p>
+      <p class="rec">先和基金一次性约定 investment criteria（营收 / EBITDA / margin / 增长曲线），后续筛选才有意义。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>deal-sourcing</code></h3><span class="tag">入口</span></div>
+      <p class="what">三步 sourcing：发现公司 → CRM 查重 → 起草个性化创始人外联。</p>
+      <p class="use"><strong>触发：</strong>"source deals"、"draft founder email"。</p>
+      <p class="rec">CRM 查重要先做 —— 否则容易给已经 pass 过的公司再发外联，损害关系。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>ic-memo</code></h3><span class="tag">投决</span></div>
+      <p class="what">起草 IC memo —— 综合尽调发现、财务分析、交易条款，输出结构化、IC-ready 的推荐文档。</p>
+      <p class="use"><strong>触发：</strong>"IC memo"、"deal write-up"、"recommendation memo"。</p>
+      <p class="rec">把前面的 <code>dd-checklist</code>、<code>returns-analysis</code>、<code>value-creation-plan</code> 输出全部喂入；不要让 IC memo 重新做分析。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>portfolio-monitoring</code></h3><span class="tag">投后</span></div>
+      <p class="what">投后季度 / 月度跟踪：吃 portco 财务包，抽 KPI，做 budget variance，输出 dashboard；含 covenant 检查。</p>
+      <p class="use"><strong>触发：</strong>"review portfolio company"、"covenant check"。</p>
+      <p class="rec">设一个固定的 KPI 集合 —— 否则不同 portco 报告口径不一，无法做 portfolio 级聚合。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>returns-analysis</code></h3><span class="tag">建模</span></div>
+      <p class="what">快速 IRR / MOIC 敏感性 —— 入口 multiple、杠杆、出口 multiple、增长、持有期 5 维 sensitivity。</p>
+      <p class="use"><strong>触发：</strong>"returns analysis"、"IRR sensitivity"、"MOIC table"。</p>
+      <p class="rec">投决会前出几个 scenario：Base / Upside / Downside —— IC 喜欢看的是「最差情况下还能拿多少」。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>unit-economics</code></h3><span class="tag">尽调</span></div>
+      <p class="what">SaaS / 订阅 / 经常性收入业务的单位经济分析：ARR Bridge、Cohort、LTV/CAC、Net Retention、Payback、Revenue Quality。</p>
+      <p class="use"><strong>触发：</strong>"unit economics"、"cohort analysis"、"LTV CAC"。</p>
+      <p class="rec">对 enterprise / SMB / mid-market 要分段算 —— blended 数会掩盖结构性问题。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>value-creation-plan</code></h3><span class="tag">投后</span></div>
+      <p class="what">post-close 价值创造规划：把 revenue / cost / 运营杠杆 mapping 到 EBITDA Bridge；含 100-day 优先级、KPI、问责框架。</p>
+      <p class="use"><strong>触发：</strong>"value creation plan"、"100-day plan"、"EBITDA bridge"。</p>
+      <p class="rec">入场前的 VCP 草稿 ↔ 投后 6 个月再更新 —— 与 <code>portfolio-monitoring</code> KPI 对齐。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="wealth-management">
+  <h2 class="section-title">Wealth Management <span class="count">6 个 Skill · 财富管理</span></h2>
+  <p class="section-lead">面向高净值客户顾问的全周期：从首次提案 → 季度回顾 → 财务规划 → 节税 → 再平衡 → 客户报告。</p>
+  <div class="grid">
+
+    <div class="card"><div class="head"><h3><code>client-report</code></h3><span class="tag">报告</span></div>
+      <p class="what">面向客户的季度 / 年度业绩报告：组合收益、配置拆解、市场评论 —— 含品牌与披露。</p>
+      <p class="use"><strong>触发：</strong>"client report"、"quarterly report for [client]"。</p>
+      <p class="rec">benchmark 要和 IPS 对齐；同一客户不要中途切换 benchmark。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>client-review</code></h3><span class="tag">会议准备</span></div>
+      <p class="what">客户回顾会准备包：业绩 + 配置 + 谈话要点 + 动作项 —— 把账户数据汇成一份会议 ready 的格式。</p>
+      <p class="use"><strong>触发：</strong>"client review"、"meeting prep for [client]"。</p>
+      <p class="rec">会前找到上次会议留下的 action items；漏跟会让客户觉得「他们只是来收费的」。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>financial-plan</code></h3><span class="tag">规划</span></div>
+      <p class="what">综合财务规划：退休投影、教育金、遗产、现金流 —— 用于新客户 onboarding、年度复审、情景建模。</p>
+      <p class="use"><strong>触发：</strong>"financial plan"、"can I retire"、"education funding"。</p>
+      <p class="rec">通胀 / 税率假设要明确写出来，便于后续年度更新对比。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>investment-proposal</code></h3><span class="tag">获客</span></div>
+      <p class="what">给潜在客户的投资提案：公司介绍、配置建议、预期收益、费率结构。</p>
+      <p class="use"><strong>触发：</strong>"investment proposal"、"prospect presentation"。</p>
+      <p class="rec">「Understanding Your Needs」一节要复述客户讲过的话 —— 这一页决定了客户是否觉得被听到。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>portfolio-rebalance</code></h3><span class="tag">交易</span></div>
+      <p class="what">分析配置漂移并生成跨账户的再平衡交易建议 —— 考虑税务影响、交易成本、wash sale 窗口。</p>
+      <p class="use"><strong>触发：</strong>"rebalance"、"portfolio drift"、"allocation check"。</p>
+      <p class="rec">「先在 IRA/Roth 里再平衡，再在 taxable 里动」—— 默认走税务最优路径。</p>
+    </div>
+
+    <div class="card"><div class="head"><h3><code>tax-loss-harvesting</code></h3><span class="tag">节税</span></div>
+      <p class="what">在 taxable 账户里找 TLH 机会：未实现亏损 → 建议替代标的 → 跟踪 wash sale。</p>
+      <p class="use"><strong>触发：</strong>"TLH"、"harvest losses"、"year-end tax planning"。</p>
+      <p class="rec">Q4 月底前是密集期；替代标的要确保不构成 wash sale（不是「实质相同」）。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="lseg">
+  <h2 class="section-title">LSEG 合作 Skill <span class="count">8 个 Skill · 固收 / FX / 利率</span></h2>
+  <p class="section-lead">由 LSEG（伦敦证券交易所集团）提供 —— 全部基于其 MCP 工具链（<code>bond_price</code>、<code>interest_rate_curve</code>、<code>fx_vol_surface</code> 等）。Skill 不自己算数，工具算、Skill 负责编排和综合。</p>
+  <div class="grid">
+
+    <div class="card partner"><div class="head"><h3><code>bond-futures-basis</code></h3><span class="tag">Partner</span></div>
+      <p class="what">债券期货基差分析 —— 定价期货、识别 CTD、对比收益曲线，评估交割期权价值与基差交易机会。</p>
+      <p class="use"><strong>核心：</strong>计算 Net Basis 与 Implied Repo，与市场 Repo 对比判断期货 rich / cheap。</p>
+      <p class="rec">需要 LSEG MCP 工具组连接；适合做空 / 多基差头寸的策略台。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>bond-relative-value</code></h3><span class="tag">Partner</span></div>
+      <p class="what">债券相对价值分析 —— 总价差分解（无风险 + 信用 + 残差）、场景压力测试。</p>
+      <p class="use"><strong>核心：</strong>残差价差 = G-spread − Credit curve spread，揭示真正的 rich / cheap。</p>
+      <p class="rec">配合 <code>fixed_income_risk_analytics</code>，可深度处理含权债。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>equity-research</code></h3><span class="tag">Partner</span></div>
+      <p class="what">股票研究快照 —— IBES 一致预期 + 公司基本面 + 历史价格 + 宏观背景，输出结构化研究 snapshot。</p>
+      <p class="use"><strong>核心问题：</strong>"where might consensus be wrong"。</p>
+      <p class="rec">和上文 Anthropic 的 <code>equity-research</code> vertical 是不同的 —— 这里走 LSEG / IBES 数据；适合需要 IBES 一致预期的场景。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>fixed-income-portfolio</code></h3><span class="tag">Partner</span></div>
+      <p class="what">固收组合分析：批量定价 → 加权聚合（yield / duration / DV01）→ 现金流瀑布 → 标准 rate shock 场景。</p>
+      <p class="use"><strong>核心：</strong>市值加权的 portfolio 级指标 + 单券的 reference data 拆分。</p>
+      <p class="rec">每次 portfolio review 跑一次；标准 shock（±50 / ±100 / ±200 bp）是 IC / 风控的通用语言。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>fx-carry-trade</code></h3><span class="tag">Partner</span></div>
+      <p class="what">FX Carry 评估 —— Spot + Forward Curve + Vol Surface + 历史趋势；核心指标是 Carry-to-Vol 比率。</p>
+      <p class="use"><strong>核心：</strong>annualized carry / ATM implied vol。</p>
+      <p class="rec">Carry 本质是 short volatility —— Vol 上升是首要风险信号，注意监控 ATM 与 Risk Reversal。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>macro-rates-monitor</code></h3><span class="tag">Partner</span></div>
+      <p class="what">宏观与利率 dashboard：周期位置（GDP/PMI）、央行（policy rate / curve）、债市（slope / real rate）、金融条件（swap spread）。</p>
+      <p class="use"><strong>核心：</strong>把多个指标融合成一段「叙事」。</p>
+      <p class="rec">每周一上午跑一次；与 <code>swap-curve-strategy</code> 形成「宏观 → 曲线策略」的下游链路。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>option-vol-analysis</code></h3><span class="tag">Partner</span></div>
+      <p class="what">期权波动率分析 —— Vol Surface（ATM 期限结构 / Risk Reversal / Butterfly）、Greeks、Implied vs Realized。</p>
+      <p class="use"><strong>核心：</strong>vol premium = implied − realized，判断期权贵不贵。</p>
+      <p class="rec">先看 surface 形状，再为特定 strike 计算 Greeks —— 不要反过来。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>swap-curve-strategy</code></h3><span class="tag">Partner</span></div>
+      <p class="what">利率掉期曲线策略：构建 swap 曲线 → 叠加政府曲线（swap spread）→ 通胀曲线（real rate decomp）→ 计算 2s10s / 5s30s / butterfly。</p>
+      <p class="use"><strong>核心：</strong>给出 DV01 中性的 steepener / flattener / butterfly 交易思路。</p>
+      <p class="rec">所有交易建议都要附 DV01 中性的 sizing 和 carry / roll-down —— 别只给方向不给量。</p>
+    </div>
+
+  </div>
+</section>
+
+<section id="spglobal">
+  <h2 class="section-title">S&amp;P Global 合作 Skill <span class="count">3 个 Skill</span></h2>
+  <p class="section-lead">由 S&amp;P Global 通过 Kensho LLM-ready API（kfinance MCP）+ Kensho Grounding 提供 —— 严格的「只用这两个 MCP」限制，禁止任何 Web 搜索 fallback。</p>
+  <div class="grid">
+
+    <div class="card partner"><div class="head"><h3><code>earnings-preview-beta</code></h3><span class="tag">Partner · Beta</span></div>
+      <p class="what">单公司 4–5 页 HTML 财报前瞻：最近一份电话会 transcript + 竞品景观 + 估值 + 近期新闻，输出自包含 HTML。</p>
+      <p class="use"><strong>触发：</strong>"earnings preview for [company]"（S&amp;P / Kensho 数据源场景）。</p>
+      <p class="rec">所有研究必须在写报告前完成；每条数据点写文件落盘以防上下文压缩丢失；财季要照 transcript 的写法（如 Walmart Q4 FY2026）—— 别按日历推断。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>funding-digest</code></h3><span class="tag">Partner</span></div>
+      <p class="what">单页 PowerPoint 投融资 digest —— 关键 takeaway、估值数据、Capital IQ deal 链接；强制底部 AI 免责声明。</p>
+      <p class="use"><strong>触发：</strong>"weekly funding recap"、"deal flow digest"。</p>
+      <p class="rec">输出的黄色 banner「Analysis is AI-generated — please confirm all outputs」是合规要求，不能去掉。</p>
+    </div>
+
+    <div class="card partner"><div class="head"><h3><code>tear-sheet</code></h3><span class="tag">Partner</span></div>
+      <p class="what">公司 Tear Sheet：从 S&amp;P Capital IQ 拉数据，输出 Word 文档；支持 4 种受众（Equity Research / IB-M&amp;A / Corp Dev / Sales-BD）。</p>
+      <p class="use"><strong>触发：</strong>"tear sheet"、"company one-pager"、"company snapshot"。</p>
+      <p class="rec">用户没指定受众时一定要问 —— 4 种模板的字段集差别很大。</p>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  报告整理基于 <code>anthropics/financial-services</code> 仓库的 SKILL.md 元数据，截至 2026-05-19。<br>
+  本仓库的所有 Skill 都是「分析草稿」工具 —— 它们不下投资建议、不执行交易、不签字过账；每一份输出都需要合资格的专业人士复核后才能使用。
+</footer>
+
+</div>
+</body>
+</html>

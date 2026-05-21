@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Crusoe.ai 公司研究报告 — 2026 年 5 月</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #6a6a6a;
+    --line: #e6e6e6;
+    --bg: #fafaf7;
+    --card: #ffffff;
+    --accent: #1F3864;
+    --accent-soft: #e8eef7;
+    --good: #2e7d5b;
+    --good-soft: #e6f1eb;
+    --warn: #b58a1c;
+    --warn-soft: #fbf6e6;
+    --risk: #a23a2a;
+    --risk-soft: #f7e6e1;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: -apple-system, "PingFang SC", "Helvetica Neue", Helvetica, Arial, "Microsoft YaHei", sans-serif; line-height: 1.6; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 48px 32px 80px; }
+  header { border-bottom: 2px solid var(--ink); padding-bottom: 24px; margin-bottom: 32px; }
+  header .eyebrow { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
+  header h1 { font-size: 32px; margin: 6px 0 8px; letter-spacing: -0.01em; }
+  header .sub { color: var(--muted); margin: 0; font-size: 15px; }
+  header .meta { margin-top: 12px; font-size: 12.5px; color: var(--muted); }
+  nav.toc { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 16px 22px; margin-bottom: 40px; }
+  nav.toc h2 { font-size: 13px; margin: 0 0 8px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  nav.toc ol { margin: 0; padding-left: 22px; columns: 2; column-gap: 24px; }
+  nav.toc li { margin: 3px 0; font-size: 14px; }
+  nav.toc a { color: var(--ink); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); }
+  @media (max-width: 760px) { nav.toc ol { columns: 1; } }
+  section { margin-bottom: 56px; }
+  h2.section-title { font-size: 22px; margin: 0 0 6px; padding-bottom: 10px; border-bottom: 1px solid var(--line); display: flex; align-items: baseline; justify-content: space-between; }
+  h2.section-title .skill { font-size: 12px; color: var(--muted); font-weight: 400; letter-spacing: 0.04em; }
+  .lead { color: #444; margin: 10px 0 22px; max-width: 880px; font-size: 14.5px; }
+  h3 { font-size: 16px; margin: 22px 0 8px; color: var(--accent); }
+  h4 { font-size: 14px; margin: 14px 0 6px; }
+  p { margin: 6px 0 10px; font-size: 14.5px; }
+  ul, ol { font-size: 14.5px; }
+  ul li, ol li { margin: 3px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 18px; font-size: 13.5px; background: var(--card); }
+  th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  tr:nth-child(even) td { background: #fbfaf7; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 16px 0 24px; }
+  @media (max-width: 700px) { .stats { grid-template-columns: 1fr 1fr; } }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; }
+  .stat .n { font-size: 22px; font-weight: 600; color: var(--accent); }
+  .stat .l { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.04em; }
+  .stat .note { font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+  .callout { padding: 12px 16px; border-radius: 4px; margin: 12px 0; font-size: 14px; }
+  .callout.good { background: var(--good-soft); border-left: 4px solid var(--good); }
+  .callout.warn { background: var(--warn-soft); border-left: 4px solid var(--warn); }
+  .callout.risk { background: var(--risk-soft); border-left: 4px solid var(--risk); }
+  .callout strong { color: var(--ink); }
+  .tag { display: inline-block; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 7px; border-radius: 10px; vertical-align: middle; margin-left: 6px; }
+  .tag.platinum { background: #e6e6e6; color: #555; }
+  .tag.gold { background: #fbf3d7; color: #8a6b15; }
+  .tag.silver { background: #eef0f3; color: #5a6478; }
+  .tier-box { display: inline-block; min-width: 70px; text-align: center; padding: 2px 8px; border-radius: 3px; font-size: 12px; font-weight: 600; }
+  .tier-platinum { background: #e6e6e6; color: #444; }
+  .tier-gold { background: #fbf3d7; color: #8a6b15; }
+  .tier-silver { background: #eef0f3; color: #5a6478; }
+  .timeline { position: relative; padding-left: 24px; margin: 16px 0; }
+  .timeline::before { content: ""; position: absolute; left: 6px; top: 4px; bottom: 4px; width: 2px; background: var(--accent-soft); }
+  .tline-item { position: relative; padding: 6px 0 10px; }
+  .tline-item::before { content: ""; position: absolute; left: -22px; top: 11px; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; border: 2px solid var(--bg); }
+  .tline-item .date { font-weight: 600; color: var(--accent); font-size: 13.5px; }
+  .tline-item .body { font-size: 14px; color: #333; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 760px) { .grid2 { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px 18px; }
+  .card h4 { margin-top: 0; }
+  footer { border-top: 1px solid var(--line); padding-top: 18px; color: var(--muted); font-size: 12px; }
+  footer .src { columns: 2; column-gap: 24px; }
+  footer .src a { color: var(--muted); }
+  .quote { font-size: 13px; color: #555; font-style: italic; border-left: 3px solid var(--line); padding-left: 12px; margin: 10px 0; }
+  .pill { display: inline-block; padding: 1px 8px; font-size: 11.5px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); margin: 1px 3px 1px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">Company Research · Anthropic financial-services Skill Workflow</div>
+  <h1>Crusoe.ai — 公司研究报告</h1>
+  <p class="sub">私营 AI 基础设施公司 · 美国丹佛 · 估值 $10B · 2026 年 5 月</p>
+  <div class="meta">研究方法：Web Research + Anthropic financial-services Skill 工作流（sector-overview · competitive-analysis · tear-sheet · funding-digest）</div>
+</header>
+
+<nav class="toc">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#summary">执行摘要</a></li>
+    <li><a href="#sector">① AI 算力 / Neocloud 赛道概览</a></li>
+    <li><a href="#competitive">② 竞品对比</a></li>
+    <li><a href="#tearsheet">③ Crusoe 公司画像（Tear Sheet）</a></li>
+    <li><a href="#funding">④ 融资与交易动态</a></li>
+    <li><a href="#takeaways">核心结论与监控指标</a></li>
+  </ol>
+</nav>
+
+<!-- ========== EXECUTIVE SUMMARY ========== -->
+<section id="summary">
+  <h2 class="section-title">执行摘要</h2>
+  <div class="stats">
+    <div class="stat"><div class="n">$10B</div><div class="l">最新估值</div><div class="note">Series E · 2025/10</div></div>
+    <div class="stat"><div class="n">$998M</div><div class="l">2025E 营收</div><div class="note">+262% YoY</div></div>
+    <div class="stat"><div class="n">45 GW</div><div class="l">电力 pipeline</div><div class="note">2025 内 +4x</div></div>
+    <div class="stat"><div class="n">~$4.5B</div><div class="l">累计股权融资</div><div class="note">+ 数十亿美元债</div></div>
+  </div>
+  <p>Crusoe 是 2018 年由 <strong>Chase Lochmiller</strong>（CEO）和 <strong>Cully Cavness</strong>（President）创立的「AI 工厂公司」。原本通过 Digital Flare Mitigation 技术把油气田废气转成比特币挖矿算力，2024 年底剥离比特币矿业后<strong>完全转向 AI 算力</strong>。公司的核心叙事是<strong>「垂直一体化的 AI 工厂」—— 自己拿能源、自建数据中心、自己制造组件、自己提供 GPU 云</strong>，并以「BYO Power」（自带电力）模式绕过传统电网瓶颈。</p>
+  <div class="callout good"><strong>核心机会：</strong>在 SemiAnalysis ClusterMAX 排名中位列 Gold tier；是 OpenAI Stargate 项目 Abilene 旗舰站点（1.2 GW）的开发方；2025 H1-Q3 Cloud bookings 同比 5x，电力 pipeline 一年内增长 4 倍至 45 GW。</div>
+  <div class="callout risk"><strong>核心风险：</strong>2026 年 3 月 OpenAI/Oracle <strong>取消 Abilene 600 MW 扩建</strong>，理由包括「冬季液冷故障导致多日停机」损害了关系、OpenAI 想等 Vera Rubin 芯片；Crusoe 正在拉 Meta（在 Nvidia 撮合下）和 Microsoft 接盘 —— 这是单一大客户集中度风险的明确信号。</div>
+</section>
+
+<!-- ========== SECTION 1: SECTOR OVERVIEW ========== -->
+<section id="sector">
+  <h2 class="section-title">① AI 算力 / Neocloud 赛道概览 <span class="skill">sector-overview</span></h2>
+  <p class="lead">AI 推训需求在 2024–2026 年快速从「应急买电」演变成「战略基础设施合同」。「Neocloud」（新云）—— 以 GPU-as-a-Service 为单一焦点的厂商 —— 正在以高速互连、专门化和价格三个维度争夺 Hyperscaler 的份额，而 Hyperscaler 反过来也开始把它们当成「容量基础设施」做长期锁定（如 CoreWeave–Meta $21B、Nebius–Microsoft $17.4B）。</p>
+
+  <h3>市场结构：三类玩家</h3>
+  <table>
+    <tr><th style="width: 22%">类别</th><th>典型玩家</th><th>定位</th></tr>
+    <tr><td><strong>Hyperscalers</strong></td><td>AWS / Azure / GCP / Oracle</td><td>多服务组合；GPU 是其中一项；走 sticky 客户与 enterprise 合规护城河</td></tr>
+    <tr><td><strong>Neoclouds</strong></td><td>CoreWeave、Crusoe、Lambda、Nebius、Together AI</td><td>纯 GPU 云；价格 + 技术专业化竞争；与 Hyperscaler 既是替代也是供应商</td></tr>
+    <tr><td><strong>长尾</strong></td><td>Vast.ai、RunPod、SF Compute、Hyperstack 等</td><td>极致低价；适合预算敏感的研究与中小客户</td></tr>
+  </table>
+
+  <h3>SemiAnalysis ClusterMAX 评级（2025–2026）</h3>
+  <table>
+    <tr><th>Tier</th><th>代表玩家</th><th>含义</th></tr>
+    <tr><td><span class="tier-box tier-platinum">Platinum</span></td><td>CoreWeave</td><td>唯一持续命令溢价定价的 Neocloud；行业标杆</td></tr>
+    <tr><td><span class="tier-box tier-gold">Gold</span></td><td>Nebius · Oracle · Azure · <strong>Crusoe</strong> · Together AI · Fluidstack · LeptonAI</td><td>稳定企业级交付能力，但仍有差距</td></tr>
+    <tr><td><span class="tier-box tier-silver">Silver</span></td><td>AWS · Lambda · Scaleway · Firma/SMC</td><td>有可用产品，但有明显短板（规模 / 性能 / 服务 / 价格）</td></tr>
+  </table>
+
+  <h3>5 条主线趋势</h3>
+  <ol>
+    <li><strong>电力是真正的瓶颈</strong> —— 单机柜功耗从 15 年前的 2–4 kW 升到 AI 时代的 140 kW。建数据中心的难点从「征地 + 机房」变成「能在 18 个月内拿到 100MW–1GW 电力的能力」。<em>Crusoe 的核心论点正是这一条。</em></li>
+    <li><strong>Hyperscaler 反向锁定 Neocloud 容量</strong> —— Meta 与 CoreWeave 的 $21B、Microsoft 与 Nebius 的 $17.4B、Meta 与 Nebius 的 $3B/5 年 ——「Reserved capacity 合同更像 dark fiber 预订或半导体长协，而非普通云开销」。</li>
+    <li><strong>Stargate 等大基建拉动需求</strong> —— OpenAI / Oracle / SoftBank / MGX 的 $500B Stargate 是赛道最大需求方，但<strong>需求侧的灵活性极高</strong>（OpenAI 可以在 Vera Rubin 准备好时换站点，参见 Abilene 取消事件）。</li>
+    <li><strong>价格在 race-to-the-bottom</strong> —— H100 时薪在 2024–2025 年从约 $8 跌至 $1.45–$6.15 区间，4x 价差，「不可持续」。这倒逼厂商寻找差异化（垂直整合、自有电力、模块化、地理 / 主权数据）。</li>
+    <li><strong>架构理念分裂：裸金属 vs 轻量 VM</strong> —— CoreWeave、Oracle 走裸金属 + DPU（NVIDIA BlueField）；Nebius、Crusoe 走轻量 VM（cloud-hypervisor），换 seconds-level 配置 / snapshot / 隔离。Nebius 已证明 VM 路线可达裸金属性能；Crusoe 仍在收敛中。</li>
+  </ol>
+</section>
+
+<!-- ========== SECTION 2: COMPETITIVE ANALYSIS ========== -->
+<section id="competitive">
+  <h2 class="section-title">② 竞品对比 <span class="skill">competitive-analysis</span></h2>
+  <p class="lead">用同样维度对比 5 家主流 Neocloud。CoreWeave 是规模上的孤儿；Nebius 是技术执行的标杆；Crusoe 是垂直整合的极端样本；Lambda 是简单易用的代表；Together AI 是平台层而非纯 GPU 出租。</p>
+
+  <h3>主要竞品对比表</h3>
+  <table>
+    <tr>
+      <th style="width: 12%">公司</th>
+      <th>Tier / 上市</th>
+      <th>最近营收</th>
+      <th>核心差异化</th>
+      <th>关键客户</th>
+      <th>限制</th>
+    </tr>
+    <tr>
+      <td><strong>CoreWeave</strong></td>
+      <td><span class="tier-box tier-platinum">Platinum</span><br>已 IPO</td>
+      <td>$2.1B（Q1 2026, +112%）<br>$100B 合同 pipeline</td>
+      <td>Kubernetes-native；SUNK 同时跑 SLURM/K8s；最大规模</td>
+      <td>Microsoft · OpenAI · Google · NVIDIA · Meta（$21B）</td>
+      <td>债务杠杆高；溢价定价对预算敏感客户不友好</td>
+    </tr>
+    <tr>
+      <td><strong>Nebius</strong></td>
+      <td><span class="tier-box tier-gold">Gold</span><br>已上市</td>
+      <td>$399M（截至 2026/05/14, +684% YoY）<br>ARR 目标 $7–9B by EOY 2026</td>
+      <td>VM 路线达裸金属性能；EU 数据驻留；与 VAST Data 集成达 11–12 GB/s</td>
+      <td>Microsoft（$17.4B）· Meta（$3B/5 年）</td>
+      <td>主要在欧洲 / 中东，美国规模较小</td>
+    </tr>
+    <tr>
+      <td><strong>Crusoe</strong> ★</td>
+      <td><span class="tier-box tier-gold">Gold</span><br>私营 · $10B</td>
+      <td>$998M（2025E）<br>2026E ≈ $2B</td>
+      <td>垂直一体化：自有能源（45 GW pipeline）+ 自建 DC + Crusoe Industries 制造 + Cloud；唯一能在 3 个月内立一个 Edge Zone 的玩家</td>
+      <td>OpenAI/Oracle（Stargate Abilene 1.2 GW）· Microsoft（Abilene 接盘）· 与 Meta 谈判中</td>
+      <td>缺原生 Object Storage；VM 路线性能仍在收敛；Stargate 集中度高</td>
+    </tr>
+    <tr>
+      <td><strong>Lambda</strong></td>
+      <td><span class="tier-box tier-silver">Silver</span><br>私营</td>
+      <td>未披露</td>
+      <td>1-Click Clusters；价格友好；研究人员体验好；Nvidia 投资</td>
+      <td>研究团队、AI 初创、学术</td>
+      <td>规模 / 企业能力 / 网络互连相对弱</td>
+    </tr>
+    <tr>
+      <td><strong>Together AI</strong></td>
+      <td><span class="tier-box tier-gold">Gold</span><br>私营</td>
+      <td>未披露</td>
+      <td>平台 + 模型路由 + 微调，而非单纯出租 GPU</td>
+      <td>需要「模型即服务」体验的 AI 应用开发者</td>
+      <td>纯算力规模不如 CoreWeave / Crusoe</td>
+    </tr>
+  </table>
+
+  <h3>战略象限：规模 vs 差异化</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>规模优先（容量基础设施）</h4>
+      <ul>
+        <li><strong>CoreWeave</strong> —— 已经是 Hyperscaler 的容量供应商</li>
+        <li><strong>Crusoe</strong> —— 通过 Stargate + 垂直整合争夺这块</li>
+      </ul>
+      <p>赢的方式：拿到最便宜的电、用 long-term 合同锁客户、用产能换溢价。</p>
+    </div>
+    <div class="card">
+      <h4>差异化优先（专门化平台）</h4>
+      <ul>
+        <li><strong>Nebius</strong> —— EU 主权 + VM 路线 + Hyperscaler 主备角色</li>
+        <li><strong>Together AI</strong> —— 模型即服务体验</li>
+        <li><strong>Lambda</strong> —— 易用 + 研究人员心智</li>
+      </ul>
+      <p>赢的方式：在某一垂直 / 客户层做到 sticky；不和 CoreWeave 拼绝对规模。</p>
+    </div>
+  </div>
+
+  <h3>Crusoe 的相对位置</h3>
+  <div class="callout warn">
+    <strong>Crusoe 同时在抢规模和差异化两条线。</strong>规模线（Stargate / 1.8 GW Wyoming）让它和 CoreWeave 直面竞争；差异化线（清洁能源 + 模块化 Spark + Edge Zones + 太空数据中心）让它和单一规模玩家拉开。
+    <br><br>
+    潜在问题：<strong>这两条线消耗的资本性质不同</strong> —— 规模需要长期债务（Brookfield $750M、Goldman $300M），差异化需要 R&amp;D / M&amp;A（收购 Atero、与 GE Vernova / Redwood Materials / Starcloud 合作）。能否两边都做透是核心估值变量。
+  </div>
+</section>
+
+<!-- ========== SECTION 3: TEAR SHEET ========== -->
+<section id="tearsheet">
+  <h2 class="section-title">③ Crusoe 公司画像 <span class="skill">tear-sheet · Corp Dev / Equity Research 视角</span></h2>
+
+  <h3>公司概览</h3>
+  <table>
+    <tr><th style="width: 22%">字段</th><th>内容</th></tr>
+    <tr><td>正式名称</td><td>Crusoe Energy Systems Inc.</td></tr>
+    <tr><td>成立 / 总部</td><td>2018 / 美国丹佛（科罗拉多州）；办公室扩展至 Sunnyvale、Dublin、Tel Aviv</td></tr>
+    <tr><td>类型</td><td>私营（C-Corp）；2022 年达到独角兽地位</td></tr>
+    <tr><td>员工规模</td><td>核心团队 300+；Abilene 在场工人 5,800（接近当地人口的 5%）</td></tr>
+    <tr><td>当前估值</td><td>$10B（Series E, 2025/10）</td></tr>
+    <tr><td>NVIDIA 关系</td><td>Preferred Partner；NVIDIA 多轮投资人，并在 Abilene 扩建谈判中支付 $150M 押金撮合 Meta</td></tr>
+    <tr><td>奖项</td><td>2025 Forbes AI 50 · TIME100AI · Fast Company Most Innovative Companies 2026</td></tr>
+  </table>
+
+  <h3>商业模式：垂直一体化 AI 工厂</h3>
+  <p>传统 AI 基础设施是「四段式」—— 发电公司 + 地产开发商 + 数据中心运营商 + 云平台 —— 步调不一致、激励错配、周期长。Crusoe 把这 4 段合到一家公司：</p>
+  <table>
+    <tr><th>价值链环节</th><th>Crusoe 怎么做</th></tr>
+    <tr><td><strong>① 能源</strong></td><td>「BYO Power」—— 自己拿停滞 / 可再生能源，与 GE Vernova（燃气轮机）、Redwood Materials（二代 EV 电池）、Tallgrass、Lancium 合作；电力 pipeline 已达 <strong>45 GW</strong></td></tr>
+    <tr><td><strong>② 选址与开发</strong></td><td>跟着能源走，而非跟着电网走 ——「Move the compute to the energy」</td></tr>
+    <tr><td><strong>③ 数据中心组件制造</strong></td><td>Crusoe Industries 国内自产；Spark Factory 生产模块化数据中心，可在 3 个月内立一个 Edge Zone</td></tr>
+    <tr><td><strong>④ 云平台</strong></td><td>Crusoe Cloud（GPU 出租）+ Crusoe Managed Inference（MemoryAlloy 内存优化技术）</td></tr>
+  </table>
+
+  <h3>产品线</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>Crusoe Cloud</h4>
+      <p>核心 GPU 云：H100 / H200 集群；2025 H1–Q3 bookings 同比 +5x；99.98% 上线率；面向 AI 训练 + 推理工作负载；Iceland / Nordic 站点支持低 PUE。</p>
+    </div>
+    <div class="card">
+      <h4>Crusoe Managed Inference</h4>
+      <p>2025 推出；基于自研推理引擎 + MemoryAlloy 内存优化。收购 Atero（GPU 内存优化创业公司）后能力得到补强。</p>
+    </div>
+    <div class="card">
+      <h4>Crusoe Spark + Edge Zones</h4>
+      <p>2026/03 推出 Edge Zones。模块化数据中心单元，主权 / 低延迟 AI 部署；可在传统 Hyperscaler 和 Neocloud 不到的地点立刻部署。</p>
+    </div>
+    <div class="card">
+      <h4>Crusoe Industries</h4>
+      <p>国内制造端 —— 把数据中心组件从「供应链外购」变成「自家可控」。是公司 BYO Power 策略的硬件侧。</p>
+    </div>
+  </div>
+
+  <h3>关键基础设施资产</h3>
+  <table>
+    <tr><th>站点</th><th>规模</th><th>状态</th><th>客户 / 合作</th></tr>
+    <tr><td>Abilene, TX（Lancium Clean Campus）</td><td>1.2 GW · 8 栋楼 · 1,000 英亩</td><td>2 栋已经在跑 NVIDIA GB200；其余 6 栋 2026 年中前完工</td><td>OpenAI / Oracle（Stargate 旗舰）· 15 年租赁 · 450,000 GB200 GPU 计划</td></tr>
+    <tr><td>Abilene, TX（新扩展）</td><td>原计划 600 MW 扩</td><td><strong>原计划被取消（2026/03）</strong>；Microsoft 接手建 2 栋新楼 + 自有电站</td><td>Microsoft（与 OpenAI/Oracle 园区为邻）</td></tr>
+    <tr><td>Wyoming（与 Tallgrass 合作）</td><td>1.8 GW</td><td>2025 公告，建设中</td><td>未公开</td></tr>
+    <tr><td>Iceland / Nordic</td><td>未披露</td><td>已运营</td><td>Crusoe Cloud 通用客户</td></tr>
+    <tr><td>太空数据中心（与 Starcloud）</td><td>未披露</td><td>计划 2026 年底发射；2027 Q1 GPU 容量上线</td><td>实验性 —— 第一个「公共云平台 in space」</td></tr>
+  </table>
+
+  <h3>财务轨迹</h3>
+  <table>
+    <tr><th>年份</th><th>营收</th><th>同比</th><th>关键事件</th></tr>
+    <tr><td>2024</td><td>$276M</td><td>—</td><td>剥离比特币挖矿业务给 NYDIG；Series D $600M</td></tr>
+    <tr><td>2025E</td><td>$998M</td><td><strong>+262%</strong></td><td>Stargate Abilene 启动；Series E $1.375B</td></tr>
+    <tr><td>2026E</td><td>~$2B</td><td>~+100%</td><td>Microsoft 接盘 Abilene 扩建；Wyoming 推进</td></tr>
+  </table>
+  <p class="quote">注：不同数据源略有差异 —— CB Insights 把 2025 营收记为 $400M，公司自述 / Series E PR 为 $998M。差异可能来自 GAAP vs Bookings 口径。</p>
+
+  <h3>管理层</h3>
+  <table>
+    <tr><th>职位</th><th>人</th><th>背景</th></tr>
+    <tr><td>CEO 联合创始人</td><td><strong>Chase Lochmiller</strong></td><td>前 Polychain Capital GP（$1B 加密基金）；Jump Trading / GETCO 量化背景；MIT 数学物理 + Stanford CS（AI 方向）；登顶过珠峰</td></tr>
+    <tr><td>President / CSO 联合创始人</td><td><strong>Cully Cavness</strong></td><td>能源金融背景 —— Petrie Partners 投行、Highlands Natural Resources VP；牛津 MBA + Middlebury 地质学</td></tr>
+    <tr><td>COO &amp; CFO（新任）</td><td><strong>Michael Gordon</strong></td><td>前 MongoDB COO/CFO 近 10 年 —— 把上市公司财务和运营经验带进来，预示 <strong>IPO 路径准备</strong></td></tr>
+    <tr><td>CTO</td><td>Nitin Perumbeti</td><td>—</td></tr>
+    <tr><td>General Counsel</td><td>Jamey Seely</td><td>—</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <strong>管理层信号：</strong>2025 年底任命前 MongoDB COO/CFO Michael Gordon —— 这位是把 MongoDB 从 IPO 前期带到大体量上市公司的人。叠加 Series E 引入了 T. Rowe Price、Fidelity、Franklin Templeton 这些 <strong>典型的 pre-IPO 公开市场基金</strong>，公司正在为 IPO 做准备。
+  </div>
+</section>
+
+<!-- ========== SECTION 4: FUNDING DIGEST ========== -->
+<section id="funding">
+  <h2 class="section-title">④ 融资与交易动态 <span class="skill">funding-digest</span></h2>
+  <p class="lead">Crusoe 累计股权融资约 <strong>$4.5B</strong>，外加约 <strong>$11.6B Stargate 专项 JV</strong>（Blue Owl + Primary Digital Infrastructure）和数十亿美元的传统债务。下面是关键时间线与 2026 年的几笔重大商业交易。</p>
+
+  <h3>融资轮次时间线</h3>
+  <div class="timeline">
+    <div class="tline-item">
+      <div class="date">2019/03 · Seed · $4.5M</div>
+      <div class="body">Founders Fund 第一次投资。彼时仍以 DFM（油气田废气挖矿）为主业。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2019/12 · Series A · $30M</div>
+      <div class="body">由 <strong>Bain Capital Ventures</strong> 领投。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2021/04 · Series B · $128M</div>
+      <div class="body"><strong>Valor Equity Partners</strong> 首次投资并领投 —— Valor 后续成为公司最深度的财务投资人。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2022/06 · Series C · $350M @ $1.75B</div>
+      <div class="body"><strong>G2 Venture Partners</strong> 领投；Mubadala 首次进入。4 年达到独角兽。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2024/12 · Series D · $600M @ $2.8B</div>
+      <div class="body"><strong>Founders Fund 领投</strong>；NVIDIA、Fidelity、Polychain、Lowercarbon、Winklevoss、DRW Trading、Mubadala、Valor、Ribbit 跟投。每股 $29.17 —— 2024 营收 $275M × 10.2x。<strong>同月剥离比特币挖矿业务给 NYDIG</strong>（425+ 模块化 DC, 250+ MW, 7 州 2 国）—— 是 AI Pure-play 战略的正式起点。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2025/06 · Conventional Debt · $750M</div>
+      <div class="body"><strong>Brookfield Asset Management</strong> 首次进入 —— 大型基础设施债务投资人开始计入电力 + 数据中心资产。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2025/08 · Conventional Debt · $175M</div>
+      <div class="body">Victory Park Capital Advisors 首次进入。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2025/10 · Series E · $1.375B @ $10B</div>
+      <div class="body"><strong>Valor Equity Partners 和 Mubadala Capital 共同领投</strong>，超额认购。新进投资人包括 T. Rowe Price、Franklin Templeton、Fidelity、Altimeter、Tiger Global、Spark Capital、Salesforce Ventures、Supermicro、StepStone 等 —— Pre-IPO 公开市场基金阵容明显。Blue Owl 预计在后续 closing 加入。</div>
+    </div>
+    <div class="tline-item">
+      <div class="date">2026/02 · Conventional Debt III · $300M</div>
+      <div class="body"><strong>Goldman Sachs 首次进入</strong> —— 是 IPO 顾问关系的潜在前置信号。</div>
+    </div>
+  </div>
+
+  <h3>Stargate 专项资本结构</h3>
+  <div class="callout">
+    Crusoe 通过与 <strong>Blue Owl Capital</strong> 和 <strong>Primary Digital Infrastructure</strong> 的合资公司，专门为 Abilene 1.2 GW Stargate 站点融到 <strong>$11.6B 债权 + 股权</strong>。
+    这是公司报表外的一个独立 JV 结构 —— 让母公司不用直接承担基础设施 capex，但也带来「JV 利润分配」与「Project finance 排他性」的复杂度。
+  </div>
+
+  <h3>2026 年关键商业交易动态</h3>
+  <table>
+    <tr><th>日期</th><th>事件</th><th>含义</th></tr>
+    <tr><td>2026/02</td><td>Goldman Sachs $300M 债务</td><td>头部投行首次进入；IPO 准备信号</td></tr>
+    <tr><td>2026/03</td><td>OpenAI/Oracle <strong>取消 Abilene 600 MW 扩建</strong></td><td>单一大客户集中度风险显化；引发 Meta / Microsoft 接盘谈判</td></tr>
+    <tr><td>2026/03</td><td><strong>NVIDIA 支付 $150M 押金</strong>给 Crusoe，撮合 Meta 接盘 Abilene 扩建</td><td>NVIDIA 用资金锁定 Crusoe 不切换 AMD；说明硬件供应商已经把 Neocloud 当成战场</td></tr>
+    <tr><td>2026/03</td><td><strong>Microsoft 接手 Abilene 扩建</strong> —— 与 Crusoe 合建 2 栋新 AI 工厂楼 + 自有电站</td><td>Microsoft 与 OpenAI 关系松动的具象化；Microsoft 也直接做电力，不只是租客</td></tr>
+    <tr><td>2026/03</td><td>Crusoe Edge Zones 正式发布</td><td>差异化战略落地 —— 走「主权 AI + 低延迟」路线，避开和 CoreWeave 的正面规模战</td></tr>
+    <tr><td>2026 前后</td><td>收购 Atero（GPU 内存优化）；与 GE Vernova、Redwood Materials、Tallgrass、Starcloud、AMD 多个新合作</td><td>同时在硬件、能源、储能、太空、芯片多边布局</td></tr>
+  </table>
+
+  <h3>投资人结构画像</h3>
+  <div class="grid2">
+    <div class="card">
+      <h4>战略 / 产业（Smart Money）</h4>
+      <p><span class="pill">NVIDIA</span><span class="pill">Supermicro</span><span class="pill">DPR Construction</span><span class="pill">Salesforce Ventures</span></p>
+      <p style="font-size: 13px; color: var(--muted);">硬件、施工、企业客户合作三个轴都有产业投资人锁定。</p>
+    </div>
+    <div class="card">
+      <h4>主权 / 长钱</h4>
+      <p><span class="pill">Mubadala</span><span class="pill">Brookfield</span><span class="pill">StepStone</span><span class="pill">Blue Owl</span></p>
+      <p style="font-size: 13px; color: var(--muted);">中东主权 + 基建债务 + PE 二级 + 私募信贷 —— 典型的能源 / 基建资产负债结构。</p>
+    </div>
+    <div class="card">
+      <h4>Pre-IPO 公开市场</h4>
+      <p><span class="pill">T. Rowe Price</span><span class="pill">Fidelity</span><span class="pill">Franklin Templeton</span><span class="pill">Tiger Global</span><span class="pill">Altimeter</span></p>
+      <p style="font-size: 13px; color: var(--muted);">Crossover 基金在 Series E 大量进入 —— 2027–2028 年 IPO 窗口的明确信号。</p>
+    </div>
+    <div class="card">
+      <h4>核心 VC / 创始人圈</h4>
+      <p><span class="pill">Founders Fund</span><span class="pill">Valor Equity</span><span class="pill">Spark Capital</span><span class="pill">Ribbit</span><span class="pill">Lowercarbon</span><span class="pill">Polychain</span></p>
+      <p style="font-size: 13px; color: var(--muted);">Founders Fund + Valor 是双锚；Polychain 是创始人前东家延续投资。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ========== TAKEAWAYS ========== -->
+<section id="takeaways">
+  <h2 class="section-title">核心结论与监控指标</h2>
+
+  <h3>三个核心论点</h3>
+  <ol>
+    <li><strong>Crusoe = 「能源套利 + 垂直一体化 AI 工厂」</strong>。它不是单纯的 GPU 出租商，而是 BYO Power 模式下唯一能在 18 个月内把 1 GW+ 能源转化成在线 AI 工厂的玩家。这一点是其相对 CoreWeave / Lambda 等纯算力玩家的根本差异化。</li>
+    <li><strong>当前估值由 Stargate 锚定，但 Stargate 自己也在裂痕中</strong>。OpenAI 已展示出会切换站点 / 等下一代芯片的灵活性；好消息是需求过剩到 Microsoft 立刻接盘 —— 但「替代客户接盘的折扣率」、「不同 Hyperscaler 之间的迁移成本」会决定下个估值锚定点。</li>
+    <li><strong>管理层 + 投资人结构已经在为 IPO 排队</strong>。Michael Gordon（前 MongoDB COO/CFO）、Goldman Sachs 债务首投、Crossover 基金在 Series E 大举进入 —— 2027–2028 IPO 是基本情形。</li>
+  </ol>
+
+  <h3>需要持续监控的 8 个指标</h3>
+  <table>
+    <tr><th>类别</th><th>指标</th><th>为什么重要</th></tr>
+    <tr><td>需求</td><td>Crusoe Cloud bookings YoY（2025 Q1–Q3 是 +5x）</td><td>是 Stargate 外的「真实有机增长」指标</td></tr>
+    <tr><td>需求</td><td>Abilene 扩建最终租户落定（Meta 还是其他）</td><td>决定 Stargate 集中度风险有没有被分散</td></tr>
+    <tr><td>需求</td><td>OpenAI / Oracle 在 Abilene 1.2 GW 原项目的执行进度（6 栋楼是否如期 mid-2026 完工）</td><td>反映与核心客户的关系修复程度</td></tr>
+    <tr><td>供给</td><td>电力 pipeline（当前 45 GW）下一次更新</td><td>是「BYO Power」叙事的命门</td></tr>
+    <tr><td>供给</td><td>Edge Zones 真实上线数量 / 客户名单</td><td>验证差异化战略是否产生订单</td></tr>
+    <tr><td>财务</td><td>2026E 营收能否达到 $2B</td><td>Series E 估值（10x 2024 营收）合理性的检验</td></tr>
+    <tr><td>财务</td><td>债务 / 股权比例与 Stargate JV 利润分配</td><td>判断估值时「合并报表 vs 表外」的口径很关键</td></tr>
+    <tr><td>资本</td><td>是否有 S-1 申请 / 投行 mandate 信号</td><td>IPO 窗口判断</td></tr>
+  </table>
+
+  <div class="callout risk">
+    <strong>三个最值得追问的问题（建议作为后续 DD 的起点）：</strong>
+    <ol style="margin: 8px 0 0;">
+      <li>除 Stargate 外的 Crusoe Cloud 营收占比是多少？如果 Stargate 项目营收剥离，公司估值还剩什么？</li>
+      <li>Blue Owl JV 的 $11.6B 中 Crusoe 自己分到的经济利益是多少？股权 vs 项目分成？这决定母公司报表里有多少是「真利润」。</li>
+      <li>Abilene 冬季液冷故障的根本原因是什么？类似事件在 Wyoming 1.8 GW 项目上的复现概率？这是「执行风险」的具体校准点。</li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  <div><strong>数据来源（按出现顺序）：</strong></div>
+  <div class="src">
+    <p>
+      <a href="https://www.crusoe.ai/about/company" target="_blank">Crusoe — About / Company</a> ·
+      <a href="https://www.crusoe.ai/resources/newsroom/crusoe-announces-series-e-funding" target="_blank">Crusoe — Series E 公告</a> ·
+      <a href="https://www.crusoe.ai/resources/newsroom/crusoe-unveils-crusoe-edge-zones" target="_blank">Crusoe Edge Zones 公告</a> ·
+      <a href="https://research.contrary.com/company/crusoe" target="_blank">Contrary Research — Crusoe Breakdown</a> ·
+      <a href="https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/the-ai-infrastructure-of-the-future" target="_blank">McKinsey — AI 基础设施</a> ·
+      <a href="https://newsletter.semianalysis.com/p/clustermax-20-the-industry-standard" target="_blank">SemiAnalysis ClusterMAX 2.0</a> ·
+      <a href="https://www.networkworld.com/article/4011187/neoclouds-roll-in-challenge-hyperscalers-for-ai-workloads.html" target="_blank">Network World — Neoclouds 挑战 Hyperscaler</a> ·
+      <a href="https://saturncloud.io/blog/gpu-cloud-comparison-neoclouds-2025/" target="_blank">Saturn Cloud — Neocloud 对比</a> ·
+      <a href="https://northflank.com/blog/crusoe-alternatives" target="_blank">Northflank — Crusoe 替代</a> ·
+      <a href="https://blockonomi.com/coreweave-vs-nebius-comparing-two-ai-cloud-infrastructure-stocks-in-2026/" target="_blank">Blockonomi — CoreWeave vs Nebius</a> ·
+      <a href="https://brandergroup.net/2026/04/coreweaves-21b-meta-deal-ignites-the-ai-battleground/" target="_blank">Brander — CoreWeave $21B Meta</a> ·
+      <a href="https://www.datacenterdynamics.com/en/news/oracleopenai-drop-plans-to-expand-flagship-abilene-stargate-site-meta-in-talks-to-pick-up-crusoe-capacity-with-nvidias-help/" target="_blank">DCD — Abilene 取消扩建</a> ·
+      <a href="https://www.tomshardware.com/tech-industry/oracle-and-openai-scrap-planned-600mw-abilene-expansion" target="_blank">Tom's Hardware — 600MW 取消</a> ·
+      <a href="https://fortune.com/2026/03/27/microsoft-texas-data-center-open-ai-former-partner-cloud-provider/" target="_blank">Fortune — Microsoft 接盘</a> ·
+      <a href="https://www.crusoe.ai/about/leadership" target="_blank">Crusoe Leadership</a> ·
+      <a href="https://www.crusoe.ai/resources/newsroom/crusoe-appoints-former-mongodb-executive-michael-gordon-as-coo-and-cfo" target="_blank">Crusoe — Michael Gordon 任命</a> ·
+      <a href="https://tracxn.com/d/companies/crusoe/__yyRkgaJgxamAgI3lijDZiChhfKCvnkFGTnaMcmtbFiM/funding-and-investors" target="_blank">Tracxn — Crusoe 融资</a> ·
+      <a href="https://pitchbook.com/profiles/company/267230-08" target="_blank">PitchBook — Crusoe</a> ·
+      <a href="https://sacra.com/c/crusoe/" target="_blank">Sacra — Crusoe</a> ·
+      <a href="https://www.cbinsights.com/company/crusoe-energy-systems/financials" target="_blank">CB Insights — Crusoe</a> ·
+      <a href="https://www.datacenterdynamics.com/en/news/crusoe-raises-1375bn-in-latest-funding-round/" target="_blank">DCD — $1.375B 融资</a> ·
+      <a href="https://www.siliconrepublic.com/business/crusoe-valued-10bn-closure-1-3bn-series-e-funding-strategy" target="_blank">Silicon Republic — $10B 估值</a>
+    </p>
+  </div>
+  <p style="margin-top: 14px;">本报告非投资建议；所有财务数据为公开来源 / 公司披露，未经独立核实。涉及 2026 年的事件可能仍在演变。<br>
+  方法论：本报告依照 <code>anthropics/financial-services</code> 仓库中 <code>sector-overview</code> · <code>competitive-analysis</code> · <code>tear-sheet</code> · <code>funding-digest</code> 四个 Skill 的工作流结构，结合 Web Search 数据合成。</p>
+</footer>
+
+</div>
+</body>
+</html>

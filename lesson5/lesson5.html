@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Skill · 第五课</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #fbfbfd;
+    --bg-2: #f5f5f7;
+    --fg: #1d1d1f;
+    --fg-dim: #6e6e73;
+    --accent: #0071e3;
+    --accent-2: #af52de;
+    --accent-3: #28a745;
+    --accent-4: #ff9500;
+    --accent-5: #ff3b30;
+    --card: rgba(255,255,255,0.7);
+    --card-border: rgba(0,0,0,0.08);
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+  }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+                 "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+
+  .deck {
+    width: 100vw; height: 100vh;
+    position: relative;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    padding: 6vh 8vw;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .slide.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* —— Typography —— */
+  .eyebrow {
+    font-size: 1.1rem;
+    color: var(--fg-dim);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 1.2rem;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-size: clamp(3rem, 6.5vw, 6rem);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
+  }
+  h2 {
+    font-size: clamp(2rem, 3.8vw, 3.4rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+  h3 {
+    font-size: clamp(1.3rem, 1.8vw, 1.8rem);
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.02em;
+  }
+  p, li {
+    font-size: clamp(1.05rem, 1.3vw, 1.4rem);
+    line-height: 1.55;
+    color: var(--fg-dim);
+  }
+  p strong, li strong { color: var(--fg); font-weight: 600; }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #0071e3 0%, #af52de 50%, #ff3b30 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradient-text-green {
+    background: linear-gradient(135deg, #28a745 0%, #0071e3 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradient-text-warm {
+    background: linear-gradient(135deg, #ff9500 0%, #ff3b30 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* —— Cover —— */
+  .cover {
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+  }
+  .cover .meta {
+    color: var(--fg-dim);
+    font-size: 1.1rem;
+    margin-top: 2rem;
+    letter-spacing: 0.05em;
+  }
+  .cover-orb {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ff3b30, #af52de 40%, #0071e3 80%);
+    box-shadow: 0 0 60px rgba(175, 82, 222, 0.3),
+                0 0 160px rgba(0, 113, 227, 0.2);
+    margin-bottom: 3rem;
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+  }
+
+  /* —— Layouts —— */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 1.8rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 16px 40px rgba(0,0,0,0.08);
+  }
+
+  .card .icon {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #0071e3, #af52de);
+    color: #ffffff;
+  }
+  .card.green .icon { background: linear-gradient(135deg, #28a745, #0071e3); }
+  .card.warm  .icon { background: linear-gradient(135deg, #ff9500, #ff3b30); }
+  .card.red   .icon { background: linear-gradient(135deg, #ff3b30, #ff9500); }
+  .card.purple .icon { background: linear-gradient(135deg, #af52de, #ff3b30); }
+
+  /* —— Compare blocks —— */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .compare .panel {
+    border-radius: 20px;
+    padding: 2rem;
+    min-height: 220px;
+  }
+  .compare .bad {
+    background: rgba(255, 59, 48, 0.06);
+    border: 1px solid rgba(255, 59, 48, 0.2);
+  }
+  .compare .good {
+    background: rgba(40, 167, 69, 0.06);
+    border: 1px solid rgba(40, 167, 69, 0.22);
+  }
+  .compare .label {
+    font-size: 0.9rem; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .compare .bad .label { color: #d70015; }
+  .compare .good .label { color: #248a3d; }
+
+  /* —— Code blocks —— */
+  pre, code {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  pre {
+    background: #f5f5f7;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #1d1d1f;
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+  .k { color: #ad3da4; }   /* keyword */
+  .s { color: #c41a16; }   /* string */
+  .c { color: #707f8c; }   /* comment */
+  .v { color: #0f68a0; }   /* value */
+  code {
+    background: rgba(0,0,0,0.05);
+    padding: 0.1em 0.4em;
+    border-radius: 5px;
+    font-size: 0.9em;
+  }
+  pre code { background: transparent; padding: 0; }
+
+  /* —— Lists —— */
+  ul.clean { list-style: none; }
+  ul.clean li {
+    padding: 0.6rem 0;
+    padding-left: 1.6rem;
+    position: relative;
+  }
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 1.15rem;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  ul.clean li.purple::before { background: #af52de; }
+  ul.clean li.green::before  { background: #28a745; }
+  ul.clean li.warm::before   { background: #ff9500; }
+
+  /* —— Tables —— */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 2rem;
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--card-shadow);
+  }
+  th, td {
+    padding: 1rem 1.4rem;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 1.05rem;
+  }
+  th {
+    background: #f5f5f7;
+    color: var(--fg);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td { color: var(--fg-dim); }
+  td strong { color: var(--fg); }
+
+  /* —— Sprint pipeline —— */
+  .sprint {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .sprint .step {
+    flex: 1; min-width: 110px;
+    background: #ffffff;
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 1.2rem 0.8rem;
+    text-align: center;
+    position: relative;
+    box-shadow: var(--card-shadow);
+  }
+  .sprint .step .num {
+    font-size: 0.8rem; color: var(--accent);
+    font-weight: 600; letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .sprint .step .name {
+    font-size: 1.25rem; font-weight: 600;
+    color: var(--fg); margin-bottom: 0.3rem;
+  }
+  .sprint .step .skill {
+    font-size: 0.85rem;
+    color: var(--fg-dim);
+    font-family: "SF Mono", Menlo, monospace;
+  }
+
+  /* —— Nav / progress —— */
+  .nav {
+    position: fixed;
+    bottom: 24px; right: 32px;
+    display: flex; gap: 12px;
+    align-items: center;
+    z-index: 100;
+  }
+  .nav button {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--card-border);
+    background: rgba(255,255,255,0.8);
+    color: var(--fg);
+    cursor: pointer;
+    font-size: 1.1rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+  }
+  .nav button:hover { background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+  .counter {
+    font-size: 0.9rem;
+    color: var(--fg-dim);
+    font-variant-numeric: tabular-nums;
+    margin: 0 8px;
+  }
+  .progress-bar {
+    position: fixed; top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #0a84ff, #bf5af2, #ff375f);
+    transition: width 0.4s ease;
+    z-index: 100;
+  }
+
+  /* —— Section dividers —— */
+  .section-divider {
+    background: radial-gradient(circle at 50% 50%, rgba(0,113,227,0.08) 0%, transparent 70%);
+    align-items: center;
+    text-align: center;
+  }
+  .section-divider .chapter-num {
+    font-size: 8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0071e3, #af52de);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  /* —— Big quote —— */
+  blockquote {
+    font-size: clamp(1.5rem, 2.5vw, 2.4rem);
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--fg);
+    letter-spacing: -0.02em;
+    border-left: 4px solid var(--accent);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+  }
+  blockquote cite {
+    display: block;
+    font-size: 1rem;
+    color: var(--fg-dim);
+    font-style: normal;
+    margin-top: 1rem;
+  }
+
+  /* Update compare bad/good result text colors for light theme */
+  .compare .panel p[style*="ff6961"] { color: #d70015 !important; }
+  .compare .panel p[style*="5eda82"] { color: #248a3d !important; }
+
+  /* —— Tag pills —— */
+  .pill {
+    display: inline-block;
+    padding: 0.3rem 0.9rem;
+    border-radius: 100px;
+    background: rgba(0,113,227,0.1);
+    color: #0071e3;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .pill.purple { background: rgba(175,82,222,0.1); color: #af52de; }
+  .pill.green  { background: rgba(40,167,69,0.1);  color: #248a3d; }
+  .pill.warm   { background: rgba(255,149,0,0.1); color: #c97c00; }
+
+  /* —— Stat —— */
+  .stats { display: flex; gap: 3rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .stat .num {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .stat .label {
+    color: var(--fg-dim);
+    font-size: 1rem;
+    margin-top: 0.4rem;
+  }
+
+  /* —— Hint —— */
+  .hint {
+    position: fixed; bottom: 26px; left: 32px;
+    font-size: 0.85rem; color: var(--fg-dim);
+    opacity: 0.7;
+  }
+  .hint kbd {
+    background: rgba(0,0,0,0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 0.8rem;
+    margin: 0 2px;
+  }
+
+  /* Background glow */
+  .glow-bg::before {
+    content: "";
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(175,82,222,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .glow-bg::after {
+    content: "";
+    position: absolute;
+    bottom: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,113,227,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<div class="deck" id="deck">
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide cover active glow-bg">
+  <div class="cover-orb"></div>
+  <h1 class="gradient-text">Claude Code Skill</h1>
+  <p style="font-size: 1.5rem; color: var(--fg); margin-top: 1rem;">让 AI 学会你的"专业技能"</p>
+  <div class="meta">第五课 · 2 小时 · 零基础友好</div>
+</section>
+
+<!-- ============ 2. AGENDA ============ -->
+<section class="slide">
+  <div class="eyebrow">今天我们要聊</div>
+  <h2>八个章节，从认知到上手</h2>
+  <div class="grid-4">
+    <div class="card"><div class="icon">①</div><h3>认知建立</h3><p>什么是 Skill</p></div>
+    <div class="card green"><div class="icon">②</div><h3>工作原理</h3><p>它如何被触发</p></div>
+    <div class="card warm"><div class="icon">③</div><h3>动手体验</h3><p>用现成 Skill</p></div>
+    <div class="card purple"><div class="icon">④</div><h3>三大来源</h3><p>官方·社区·自制</p></div>
+    <div class="card red"><div class="icon">⑤</div><h3>动手实战</h3><p>写第一个 Skill</p></div>
+    <div class="card"><div class="icon">⑥</div><h3>进阶概念</h3><p>作用域 · 协同</p></div>
+    <div class="card warm"><div class="icon">⑦</div><h3>真实案例</h3><p>gstack 深度拆解</p></div>
+    <div class="card green"><div class="icon">⑧</div><h3>收尾作业</h3><p>把今天学的用起来</p></div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 1 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">01</div>
+  <h2>开场与认知建立</h2>
+  <p style="margin-top: 1rem;">15 分钟</p>
+</section>
+
+<!-- ============ 1.1 ONE LINE ============ -->
+<section class="slide">
+  <div class="eyebrow">一句话定义</div>
+  <h1>Skill 就是<br><span class="gradient-text">给 AI 装的"专业技能包"</span></h1>
+  <div class="grid-3" style="margin-top: 3rem;">
+    <div class="card">
+      <div class="icon">📱</div>
+      <h3>像装 App</h3>
+      <p>手机装上"剪映"才会剪视频，Claude 装上 Skill 才会做专业的事</p>
+    </div>
+    <div class="card green">
+      <div class="icon">🔧</div>
+      <h3>像瑞士军刀</h3>
+      <p>主体不变，配件按需切换</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">👔</div>
+      <h3>像岗前培训</h3>
+      <p>新员工读完 SOP 就能上岗</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1.2 PAIN POINT ============ -->
+<section class="slide">
+  <div class="eyebrow">为什么需要 Skill</div>
+  <h2>同一个需求，差别在哪？</h2>
+  <div class="compare">
+    <div class="panel bad">
+      <div class="label">✕ 裸用 Claude</div>
+      <h3 style="color: var(--fg);">每次都要从零说</h3>
+      <p style="margin-top: 0.8rem;">"帮我审一下这段代码……要关注 SQL 注入……还要看异常处理……另外不要修改业务逻辑……风格要符合我们团队的……"</p>
+      <p style="margin-top: 1rem; color: #d70015;"><strong>结果：</strong>说一遍漏一半，每次输出都不一样</p>
+    </div>
+    <div class="panel good">
+      <div class="label">✓ 装上 Skill</div>
+      <h3 style="color: var(--fg);">一句话触发完整流程</h3>
+      <p style="margin-top: 0.8rem;">"<code>/review</code>"</p>
+      <p style="margin-top: 1rem; color: #248a3d;"><strong>结果：</strong>专业、稳定、可复现</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1.3 ECOSYSTEM MAP ============ -->
+<section class="slide">
+  <div class="eyebrow">在生态里的位置</div>
+  <h2>Skill 不是孤岛</h2>
+  <div class="grid-4">
+    <div class="card">
+      <div class="icon">📘</div>
+      <h3>CLAUDE.md</h3>
+      <p><strong>项目记忆</strong></p>
+      <p style="margin-top:0.5rem;">每次自动加载的项目说明书</p>
+    </div>
+    <div class="card green">
+      <div class="icon">🎯</div>
+      <h3>Skill</h3>
+      <p><strong>专业技能</strong></p>
+      <p style="margin-top:0.5rem;">需要时被触发的完整流程</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">🤖</div>
+      <h3>Subagent</h3>
+      <p><strong>子代理</strong></p>
+      <p style="margin-top:0.5rem;">独立干活的"小 Claude"</p>
+    </div>
+    <div class="card purple">
+      <div class="icon">🔌</div>
+      <h3>MCP</h3>
+      <p><strong>外部接口</strong></p>
+      <p style="margin-top:0.5rem;">连接数据库、API、SaaS</p>
+    </div>
+  </div>
+  <p style="margin-top: 2.5rem; font-size: 1.1rem;">💡 记住一句话：<strong style="color:var(--fg);">CLAUDE.md 是"始终在"，Skill 是"按需用"，Subagent 是"找帮手"，MCP 是"连工具"。</strong></p>
+</section>
+
+<!-- ============ CHAPTER 2 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">02</div>
+  <h2>Skill 的工作原理</h2>
+  <p style="margin-top: 1rem;">20 分钟</p>
+</section>
+
+<!-- ============ 2.1 STRUCTURE ============ -->
+<section class="slide">
+  <div class="eyebrow">Skill 的本质</div>
+  <h2>就是一个<span class="gradient-text-green">文件夹</span></h2>
+  <div class="two-col" style="margin-top: 2rem;">
+    <div>
+      <pre><span class="c"># 一个最简单的 Skill</span>
+my-skill/
+├── <span class="k">SKILL.md</span>        <span class="c"># 必需：描述 + 指令</span>
+├── template.md     <span class="c"># 可选：模板</span>
+├── examples/       <span class="c"># 可选：示例</span>
+└── scripts/        <span class="c"># 可选：脚本</span></pre>
+      <p style="margin-top: 1.5rem;">没有黑魔法。<strong>就是 Markdown + 文件夹。</strong></p>
+    </div>
+    <div>
+      <pre><span class="c">--- SKILL.md ---</span>
+<span class="k">---</span>
+<span class="k">name:</span> <span class="v">code-review</span>
+<span class="k">description:</span> <span class="s">"评审代码：关注安全、
+性能、可读性。在用户说'review'
+或提交 PR 前自动建议。"</span>
+<span class="k">---</span>
+
+<span class="c"># Steps</span>
+1. 读取改动的文件
+2. 检查 SQL 注入、XSS
+3. 检查异常处理
+4. 输出 markdown 报告</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2.2 HOW IT'S TRIGGERED ============ -->
+<section class="slide">
+  <div class="eyebrow">触发机制</div>
+  <h2>Skill 是怎么"被找到"的？</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">🔍</div>
+      <h3>描述驱动</h3>
+      <p>Claude 读所有 Skill 的 <code>description</code>，判断哪个最匹配当前任务</p>
+    </div>
+    <div class="card green">
+      <div class="icon">⚡</div>
+      <h3>显式调用</h3>
+      <p>你直接打 <code>/skill-name</code>，无需 Claude 判断</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">💡</div>
+      <h3>主动建议</h3>
+      <p>Claude 看场景觉得合适，会主动提议："要不要用 <code>/qa</code>？"</p>
+    </div>
+  </div>
+  <blockquote style="margin-top: 3rem;">
+    "好的 description = Skill 在该出现的时候出现，不该出现的时候沉默。"
+    <cite>—— 这是写 Skill 最难也最关键的一件事</cite>
+  </blockquote>
+</section>
+
+<!-- ============ 2.3 SKILL VS PROMPT ============ -->
+<section class="slide">
+  <div class="eyebrow">本质区别</div>
+  <h2>Skill ≠ 长一点的 Prompt</h2>
+  <table>
+    <thead>
+      <tr><th>维度</th><th>Prompt（提问）</th><th>Skill（技能）</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>生命周期</strong></td><td>一次性</td><td>可复用、长期存在</td></tr>
+      <tr><td><strong>版本管理</strong></td><td>没有</td><td>Git 管理，可回滚</td></tr>
+      <tr><td><strong>分享</strong></td><td>复制粘贴</td><td>开源、安装、订阅</td></tr>
+      <tr><td><strong>触发</strong></td><td>你说才执行</td><td>AI 自己判断 + 显式调用</td></tr>
+      <tr><td><strong>组织属性</strong></td><td>个人资产</td><td>团队资产</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ CHAPTER 3 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">03</div>
+  <h2>动手体验：用现成的 Skill</h2>
+  <p style="margin-top: 1rem;">25 分钟</p>
+</section>
+
+<!-- ============ 3.1 DEMO ============ -->
+<section class="slide">
+  <div class="eyebrow">现场演示</div>
+  <h2>三个官方 Skill 直接上手</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">🚀</div>
+      <h3><code>/init</code></h3>
+      <p>给一个新项目自动生成 CLAUDE.md</p>
+      <span class="pill">官方内置</span>
+    </div>
+    <div class="card green">
+      <div class="icon">🔍</div>
+      <h3><code>/review</code></h3>
+      <p>对 PR 做工程师级别的代码审查</p>
+      <span class="pill green">官方内置</span>
+    </div>
+    <div class="card red">
+      <div class="icon">🛡️</div>
+      <h3><code>/security-review</code></h3>
+      <p>OWASP Top 10 安全审查</p>
+      <span class="pill purple">官方内置</span>
+    </div>
+  </div>
+  <p style="margin-top: 2.5rem; text-align: center; font-size: 1.2rem;"><strong style="color:var(--fg);">课堂任务：</strong>每人打开一个空文件夹，运行 <code>/init</code>，观察 Claude 自动生成的文件</p>
+</section>
+
+<!-- ============ 3.2 BEFORE/AFTER ============ -->
+<section class="slide">
+  <div class="eyebrow">关键体验</div>
+  <h2>感受"专业化"的差异</h2>
+  <div class="compare" style="margin-top: 1rem;">
+    <div class="panel bad">
+      <div class="label">没用 Skill</div>
+      <p style="font-size: 1.15rem;">"帮我看看这段代码有没有问题"</p>
+      <p style="margin-top: 1rem;">→ 输出 3 行泛泛的建议</p>
+      <p style="margin-top: 0.5rem;">→ 没有结构、没有重点</p>
+      <p style="margin-top: 0.5rem;">→ 下次还得重新指挥</p>
+    </div>
+    <div class="panel good">
+      <div class="label">用了 /review</div>
+      <p style="font-size: 1.15rem;">"<code>/review</code>"</p>
+      <p style="margin-top: 1rem;">→ 自动扫描 diff</p>
+      <p style="margin-top: 0.5rem;">→ 按"严重/中等/轻微"分类</p>
+      <p style="margin-top: 0.5rem;">→ 给出修复建议 + 直接改</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 4 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">04</div>
+  <h2>Skill 的三大来源</h2>
+  <p style="margin-top: 1rem;">10 分钟</p>
+</section>
+
+<!-- ============ 4 SOURCES ============ -->
+<section class="slide">
+  <div class="eyebrow">从哪里来</div>
+  <h2>三个层级的 Skill 生态</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">🏛️</div>
+      <h3>官方内置</h3>
+      <p>Anthropic 维护，通用场景</p>
+      <ul class="clean" style="margin-top:1rem;">
+        <li>/init</li>
+        <li>/review</li>
+        <li>/security-review</li>
+      </ul>
+    </div>
+    <div class="card purple">
+      <div class="icon">🌍</div>
+      <h3>社区/插件</h3>
+      <p>第三方开发者发布，垂直领域</p>
+      <ul class="clean" style="margin-top:1rem;">
+        <li class="purple">gstack（工程团队）</li>
+        <li class="purple">financial-analysis</li>
+        <li class="purple">…数十个</li>
+      </ul>
+    </div>
+    <div class="card green">
+      <div class="icon">✍️</div>
+      <h3>自定义</h3>
+      <p>你为自己的工作流写的</p>
+      <ul class="clean" style="margin-top:1rem;">
+        <li class="green">最贴合实际需求</li>
+        <li class="green">可团队共享</li>
+        <li class="green">本节后半段重点</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 5 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">05</div>
+  <h2>动手实战：写一个自己的 Skill</h2>
+  <p style="margin-top: 1rem;">30 分钟</p>
+</section>
+
+<!-- ============ 5.1 CHOOSE TOPIC ============ -->
+<section class="slide">
+  <div class="eyebrow">第一步：选题</div>
+  <h2>找一个你"每周都要做 3 次"的事</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card"><div class="icon">📊</div><h3>周报生成器</h3><p>把一周的 Git 提交整理成可读的周报</p></div>
+    <div class="card green"><div class="icon">✏️</div><h3>中文文案润色</h3><p>按公司语调润色英→中翻译</p></div>
+    <div class="card warm"><div class="icon">🎓</div><h3>课件出题器</h3><p>给一段讲稿自动生成 5 道课堂练习</p></div>
+    <div class="card purple"><div class="icon">📧</div><h3>邮件回复模板</h3><p>客户咨询自动起草专业回复</p></div>
+    <div class="card red"><div class="icon">📝</div><h3>会议纪要</h3><p>把语音转录整理成 action items</p></div>
+    <div class="card"><div class="icon">🐛</div><h3>Bug 复现脚本</h3><p>把 bug 描述变成最小复现 demo</p></div>
+  </div>
+</section>
+
+<!-- ============ 5.2 STRUCTURE ============ -->
+<section class="slide">
+  <div class="eyebrow">第二步：SKILL.md 三要素</div>
+  <h2>这三件事决定 Skill 好不好用</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">🏷️</div>
+      <h3>name</h3>
+      <p>简短、可记、kebab-case</p>
+      <p style="margin-top:0.5rem;"><code>weekly-report</code> ✓</p>
+      <p><code>my_super_helper</code> ✗</p>
+    </div>
+    <div class="card green">
+      <div class="icon">📣</div>
+      <h3>description</h3>
+      <p><strong>最关键的一行</strong></p>
+      <p style="margin-top:0.5rem;">明确说"什么时候用 + 用来做什么"</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">📋</div>
+      <h3>正文</h3>
+      <p>步骤、约束、输出格式</p>
+      <p style="margin-top:0.5rem;">越具体越稳定</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5.3 LIVE CODE ============ -->
+<section class="slide">
+  <div class="eyebrow">现场跟写</div>
+  <h2>一起写一个 <span class="gradient-text-green">"周报生成器"</span></h2>
+  <pre style="margin-top:1.5rem;"><span class="k">---</span>
+<span class="k">name:</span> <span class="v">weekly-report</span>
+<span class="k">description:</span> <span class="s">"读取最近 7 天的 git 提交，生成中文周报。
+当用户说'写周报''生成周报'或周五下午调用。"</span>
+<span class="k">---</span>
+
+<span class="c"># 步骤</span>
+1. 运行 <span class="s">`git log --since="7 days ago" --oneline`</span>
+2. 按"功能 / 修复 / 重构"三类归并
+3. 用中文输出，每条不超过 20 字
+4. 末尾加一句"下周计划"，向用户提问获取
+
+<span class="c"># 约束</span>
+- 不要输出 commit hash
+- 不要写英文术语，找不到对应中文就保留原词
+- 输出格式：Markdown，三级标题</pre>
+</section>
+
+<!-- ============ 5.4 COMMON MISTAKES ============ -->
+<section class="slide">
+  <div class="eyebrow">常见坑</div>
+  <h2>这三个错误九成新手都会犯</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card red">
+      <div class="icon">📡</div>
+      <h3>description 太宽泛</h3>
+      <p>"帮助用户" → 啥场景都被它抢戏</p>
+      <p style="margin-top: 0.8rem; color: #248a3d;">✓ 改成"读 git log，生成周报"</p>
+    </div>
+    <div class="card red">
+      <div class="icon">🔒</div>
+      <h3>description 太狭窄</h3>
+      <p>"周五下午 5 点写周报" → 几乎不会触发</p>
+      <p style="margin-top: 0.8rem; color: #248a3d;">✓ 加触发词"周报/总结"</p>
+    </div>
+    <div class="card red">
+      <div class="icon">🌫️</div>
+      <h3>指令含糊</h3>
+      <p>"风格要好" → 每次输出都不一样</p>
+      <p style="margin-top: 0.8rem; color: #248a3d;">✓ 给出格式 / 字数 / 示例</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHAPTER 6 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">06</div>
+  <h2>进阶概念</h2>
+  <p style="margin-top: 1rem;">10 分钟</p>
+</section>
+
+<!-- ============ 6.1 SCOPE ============ -->
+<section class="slide">
+  <div class="eyebrow">作用域</div>
+  <h2>Skill 放在哪儿，谁能用？</h2>
+  <table>
+    <thead>
+      <tr><th>位置</th><th>路径</th><th>谁能用</th><th>典型场景</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>项目级</strong></td>
+        <td><code>.claude/skills/</code></td>
+        <td>仅当前项目</td>
+        <td>团队规范、项目特定流程</td>
+      </tr>
+      <tr>
+        <td><strong>用户级</strong></td>
+        <td><code>~/.claude/skills/</code></td>
+        <td>所有项目</td>
+        <td>个人工具集</td>
+      </tr>
+      <tr>
+        <td><strong>插件级</strong></td>
+        <td>通过插件管理器安装</td>
+        <td>看插件配置</td>
+        <td>第三方 Skill 包（如 gstack）</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ 6.2 COMPOSITION ============ -->
+<section class="slide">
+  <div class="eyebrow">协同</div>
+  <h2>Skill 真正的威力是<span class="gradient-text">组合</span></h2>
+  <div class="two-col">
+    <div>
+      <h3 style="margin-bottom: 1rem;">单 Skill</h3>
+      <p>解决一个具体问题</p>
+      <p style="margin-top: 0.5rem;">→ 像一把锤子</p>
+    </div>
+    <div>
+      <h3 style="margin-bottom: 1rem;">Skill × Skill</h3>
+      <p>一个调用另一个，串成流水线</p>
+      <p style="margin-top: 0.5rem;">→ 像一条生产线</p>
+    </div>
+  </div>
+  <pre style="margin-top: 2rem;"><span class="c"># 例：/ship 这一个命令，内部串了：</span>
+git status  <span class="c">→ 看改了什么</span>
+<span class="k">/review</span>     <span class="c">→ 自动评审</span>
+run tests   <span class="c">→ 跑测试</span>
+bump VERSION <span class="c">→ 更新版本号</span>
+git commit + push + PR <span class="c">→ 一气呵成</span></pre>
+  <p style="margin-top: 1.5rem;"><strong style="color:var(--fg);">这就是下一章 gstack 的核心思想。</strong></p>
+</section>
+
+<!-- ============ CHAPTER 7 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">07</div>
+  <h2>真实案例：gstack</h2>
+  <p style="margin-top: 1rem;">25 分钟 · 重点章节</p>
+</section>
+
+<!-- ============ 7.1 GSTACK INTRO ============ -->
+<section class="slide">
+  <div class="eyebrow">先看一个真实作品</div>
+  <h1><span class="gradient-text-warm">gstack</span></h1>
+  <p style="font-size: 1.6rem; color: var(--fg); margin-top: 0.5rem;">YC 现任 CEO 把自己的工作流开源了</p>
+  <blockquote style="margin-top: 2rem;">
+    "这是我的开源软件工厂。我每天都用它。<br>我把它开源，因为这些工具应该属于每个人。"
+    <cite>—— Garry Tan，Y Combinator CEO</cite>
+  </blockquote>
+  <div class="stats">
+    <div class="stat"><div class="num gradient-text">23+</div><div class="label">Skill 数量</div></div>
+    <div class="stat"><div class="num gradient-text-green">810×</div><div class="label">作者自称的生产力提升</div></div>
+    <div class="stat"><div class="num gradient-text-warm">MIT</div><div class="label">开源协议</div></div>
+  </div>
+  <p style="margin-top: 2rem; font-size: 1rem;">🔗 <code>github.com/garrytan/gstack</code></p>
+</section>
+
+<!-- ============ 7.2 PHILOSOPHY ============ -->
+<section class="slide">
+  <div class="eyebrow">核心思想</div>
+  <h2>不是工具集合，<br><span class="gradient-text-green">是一个流程</span></h2>
+  <p style="font-size: 1.3rem; margin-top: 1.5rem;">23 个 Skill 不是随便堆在一起，它们对应一个完整的 <strong style="color:var(--fg);">软件冲刺循环</strong>。</p>
+  <div class="sprint">
+    <div class="step"><div class="num">01</div><div class="name">Think</div><div class="skill">/office-hours</div></div>
+    <div class="step"><div class="num">02</div><div class="name">Plan</div><div class="skill">/plan-*-review</div></div>
+    <div class="step"><div class="num">03</div><div class="name">Build</div><div class="skill">/design-shotgun</div></div>
+    <div class="step"><div class="num">04</div><div class="name">Review</div><div class="skill">/review · /codex</div></div>
+    <div class="step"><div class="num">05</div><div class="name">Test</div><div class="skill">/qa · /cso</div></div>
+    <div class="step"><div class="num">06</div><div class="name">Ship</div><div class="skill">/ship · /deploy</div></div>
+    <div class="step"><div class="num">07</div><div class="name">Reflect</div><div class="skill">/retro · /learn</div></div>
+  </div>
+  <p style="margin-top: 2rem;">💡 <strong style="color:var(--fg);">每一步都有一个或多个 Skill 在"扮演专业角色"。</strong></p>
+</section>
+
+<!-- ============ 7.3 ROLES ============ -->
+<section class="slide">
+  <div class="eyebrow">角色化设计</div>
+  <h2>gstack 给 Claude 安排了一整个公司</h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">👔</div>
+      <h3>CEO 视角</h3>
+      <p><code>/plan-ceo-review</code></p>
+      <p style="margin-top:0.5rem;">挑战你的产品野心，问"做大十倍会怎样"</p>
+    </div>
+    <div class="card green">
+      <div class="icon">⚙️</div>
+      <h3>工程经理</h3>
+      <p><code>/plan-eng-review</code></p>
+      <p style="margin-top:0.5rem;">锁定架构、边界条件、测试覆盖</p>
+    </div>
+    <div class="card purple">
+      <div class="icon">🎨</div>
+      <h3>设计师</h3>
+      <p><code>/plan-design-review</code></p>
+      <p style="margin-top:0.5rem;">打分 0-10，告诉你怎么改到 10</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">🔒</div>
+      <h3>安全官</h3>
+      <p><code>/cso</code></p>
+      <p style="margin-top:0.5rem;">OWASP + STRIDE 真实威胁建模</p>
+    </div>
+    <div class="card red">
+      <div class="icon">🧪</div>
+      <h3>QA 工程师</h3>
+      <p><code>/qa</code></p>
+      <p style="margin-top:0.5rem;">真浏览器测试 + 自动修 bug</p>
+    </div>
+    <div class="card">
+      <div class="icon">🤝</div>
+      <h3>外部顾问</h3>
+      <p><code>/codex</code></p>
+      <p style="margin-top:0.5rem;">用 OpenAI 做交叉验证</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7.4 OPEN A SKILL ============ -->
+<section class="slide">
+  <div class="eyebrow">拆开看看</div>
+  <h2>一个 gstack Skill 长什么样？</h2>
+  <p style="margin-top: 0.5rem;">现场打开 <code>~/.claude/skills/gstack/</code>，挑一个看：</p>
+  <pre style="margin-top: 1.5rem;"><span class="c"># /office-hours 的 SKILL.md（节选）</span>
+<span class="k">---</span>
+<span class="k">name:</span> <span class="v">office-hours</span>
+<span class="k">description:</span> <span class="s">"YC Office Hours: 用六个强制问题
+拷问需求真实性、现状、最窄切入点……
+当用户描述新想法、问'值不值得做'时触发。"</span>
+<span class="k">---</span>
+
+<span class="c"># 六个强制问题</span>
+1. 谁会因为这个 <span class="k">desperate</span> 地付钱？
+2. 他们现在怎么解决这个问题？
+3. 最窄的 wedge 是什么？
+4. 你观察到了什么别人没看到？
+5. 这个产品在 5 年后还成立吗？
+6. 如果只能做一件事，是哪件？</pre>
+  <p style="margin-top: 1.5rem;"><strong style="color:var(--fg);">看，没有黑魔法。就是把 YC 的方法论写成 Markdown。</strong></p>
+</section>
+
+<!-- ============ 7.5 FOUR LESSONS ============ -->
+<section class="slide">
+  <div class="eyebrow">四个启示</div>
+  <h2>gstack 教会我们什么？</h2>
+  <div class="grid-2" style="margin-top: 1.5rem;">
+    <div class="card">
+      <div class="icon">①</div>
+      <h3>流程 > 工具</h3>
+      <p>23 个无序 Skill ≠ 一个有序流程。Skill 真正的价值是<strong>组合成工作流</strong>。</p>
+    </div>
+    <div class="card green">
+      <div class="icon">②</div>
+      <h3>角色化设计</h3>
+      <p>把 Skill 设计成"CEO 视角""安全官视角"，让 AI <strong>切换思维模式</strong>，而不是只换语气。</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">③</div>
+      <h3>可分享可复用</h3>
+      <p>一个人的工作流变成 MIT 资产，<strong>全行业受益</strong>。</p>
+    </div>
+    <div class="card purple">
+      <div class="icon">④</div>
+      <h3>个体的杠杆</h3>
+      <p>Tan 自称生产力 ×810——不是打字快，是<strong>会编排 AI 代理</strong>。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7.6 DISCUSSION ============ -->
+<section class="slide">
+  <div class="eyebrow">讨论时间</div>
+  <h2>你的行业版 gstack 长什么样？</h2>
+  <div class="grid-2" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">💭</div>
+      <h3>问题 1</h3>
+      <p style="font-size: 1.2rem; color:var(--fg);">你的行业有没有类似的"7 步流程"可以抽象成一套 Skill？</p>
+    </div>
+    <div class="card green">
+      <div class="icon">🎯</div>
+      <h3>问题 2</h3>
+      <p style="font-size: 1.2rem; color:var(--fg);">如果让你做"行业版 gstack"，先做哪 3 个 Skill？为什么？</p>
+    </div>
+  </div>
+  <p style="margin-top: 3rem; text-align:center; font-size: 1.15rem;">📝 <strong style="color:var(--fg);">每人写下答案，下课前 5 分钟分享</strong></p>
+</section>
+
+<!-- ============ CHAPTER 8 ============ -->
+<section class="slide section-divider">
+  <div class="chapter-num">08</div>
+  <h2>收尾与作业</h2>
+  <p style="margin-top: 1rem;">5 分钟</p>
+</section>
+
+<!-- ============ 8.1 HOMEWORK ============ -->
+<section class="slide">
+  <div class="eyebrow">课后作业</div>
+  <h2>把今天学的<span class="gradient-text">用起来</span></h2>
+  <div class="grid-3" style="margin-top: 2rem;">
+    <div class="card">
+      <div class="icon">📝</div>
+      <h3>必做 ①</h3>
+      <p style="color:var(--fg);">为自己的工作写 <strong>1 个 Skill</strong>，并实际使用 <strong>3 次</strong></p>
+    </div>
+    <div class="card green">
+      <div class="icon">📖</div>
+      <h3>必做 ②</h3>
+      <p style="color:var(--fg);">浏览 <strong>gstack 仓库</strong>，挑 1 个 SKILL.md 源码读完，写下"学到了什么"</p>
+    </div>
+    <div class="card warm">
+      <div class="icon">💭</div>
+      <h3>选做</h3>
+      <p style="color:var(--fg);">用 <code>/office-hours</code> 给自己的一个想法做一次<strong>灵魂拷问</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8.2 RESOURCES ============ -->
+<section class="slide">
+  <div class="eyebrow">资源清单</div>
+  <h2>下课后继续学</h2>
+  <ul class="clean" style="margin-top: 2rem; font-size: 1.2rem;">
+    <li><strong>Anthropic Skill 官方文档</strong> · docs.claude.com</li>
+    <li class="warm"><strong>gstack 仓库</strong> · github.com/garrytan/gstack（强烈推荐通读 README）</li>
+    <li class="green"><strong>Garry Tan 的 YouTube 频道</strong> · AI 工程团队的实操演示</li>
+    <li class="purple"><strong>本机 ~/.claude/skills/</strong> · 你已经装了 40+ 个 gstack Skill，去拆开看源码</li>
+  </ul>
+  <div style="margin-top: 3rem;">
+    <span class="pill">下节课</span>
+    <span class="pill purple">Subagent</span>
+    <span class="pill green">MCP</span>
+    <span class="pill warm">Hooks</span>
+  </div>
+</section>
+
+<!-- ============ ENDING ============ -->
+<section class="slide cover glow-bg">
+  <h1>从"用 AI"<br>到 <span class="gradient-text">"编排 AI"</span></h1>
+  <p style="font-size: 1.4rem; color: var(--fg-dim); margin-top: 2rem;">这就是 Skill 真正的意义。</p>
+  <p style="font-size: 1.1rem; color: var(--fg-dim); margin-top: 3rem;">下课。</p>
+</section>
+
+</div>
+
+<!-- ============ NAV ============ -->
+<div class="hint">
+  <kbd>←</kbd> <kbd>→</kbd> 翻页 · <kbd>F</kbd> 全屏 · <kbd>Esc</kbd> 退出
+</div>
+<div class="nav">
+  <button id="prev" aria-label="上一页">‹</button>
+  <span class="counter" id="counter">1 / 1</span>
+  <button id="next" aria-label="下一页">›</button>
+</div>
+
+<script>
+(function() {
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+
+  function show(i) {
+    if (i < 0) i = 0;
+    if (i >= total) i = total - 1;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + total;
+    progress.style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { next(); e.preventDefault(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { prev(); e.preventDefault(); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(total - 1); }
+    else if (e.key === 'f' || e.key === 'F') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  prevBtn.addEventListener('click', prev);
+  nextBtn.addEventListener('click', next);
+
+  // Click on right half = next, left edge = prev
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.nav') || e.target.closest('button') || e.target.closest('a')) return;
+    const x = e.clientX;
+    const w = window.innerWidth;
+    if (x > w * 0.7) next();
+    else if (x < w * 0.15) prev();
+  });
+
+  // Init
+  show(0);
+})();
+</script>
+</body>
+</html>
