@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>标普500 & 纳斯达克100 被动指数基金调研报告 | 2026 Q2</title>
+<style>
+:root {
+  --bg-primary: #0a0e17;
+  --bg-secondary: #111827;
+  --bg-card: #1a1f2e;
+  --bg-card-hover: #1f2537;
+  --border: #2a3040;
+  --text-primary: #e8eaed;
+  --text-secondary: #9aa0b0;
+  --text-muted: #6b7280;
+  --gold: #c4a562;
+  --gold-light: #d4b872;
+  --blue: #5b8def;
+  --green: #34d399;
+  --red: #f87171;
+  --orange: #fb923c;
+  --sp500: #5b8def;
+  --nasdaq: #34d399;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #0a0e17 0%, #111c2e 50%, #0d1520 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 60px 0 48px;
+  text-align: center;
+}
+header .logo {
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+header h1 {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+header .subtitle {
+  font-size: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+header .meta {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+header .meta-item {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+header .meta-item span { color: var(--gold); font-weight: 600; }
+
+/* Section */
+section { padding: 48px 0; }
+section.alt { background: var(--bg-secondary); }
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gold);
+  display: inline-block;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+  max-width: 700px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: var(--gold); }
+.stat-card .label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.stat-card .value { font-size: 28px; font-weight: 700; color: #fff; }
+.stat-card .change { font-size: 13px; margin-top: 4px; }
+.stat-card .change.up { color: var(--green); }
+.stat-card .change.down { color: var(--red); }
+
+/* Chart Section */
+.chart-container {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+  margin-bottom: 32px;
+}
+.chart-container h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.chart-container .chart-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 768px) { .chart-grid { grid-template-columns: 1fr; } }
+.chart-box {
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  padding: 20px;
+}
+.chart-box h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+.chart-box h4.sp500 { color: var(--blue); }
+.chart-box h4.nasdaq { color: var(--green); }
+.chart-box .chart-stat { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+.chart-box svg { width: 100%; height: auto; }
+
+/* Table */
+.table-wrap {
+  overflow-x: auto;
+  margin-bottom: 40px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 800px;
+}
+thead th {
+  background: var(--bg-card);
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--gold);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+tbody tr:hover { background: var(--bg-card-hover); }
+tbody tr.sub-header { background: var(--bg-secondary); }
+tbody tr.sub-header td { color: var(--gold); font-weight: 600; font-size: 12px; border-bottom: 1px solid var(--gold); }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.tag-etf { background: rgba(91,141,239,0.15); color: var(--blue); }
+.tag-feeder { background: rgba(196,165,98,0.15); color: var(--gold); }
+.tag-qdii { background: rgba(52,211,153,0.15); color: var(--green); }
+.tag-lof { background: rgba(251,146,60,0.15); color: var(--orange); }
+.tag-fof { background: rgba(248,113,113,0.15); color: var(--red); }
+.tag-ew { background: rgba(155,160,176,0.15); color: var(--text-secondary); }
+
+.rating { font-weight: 700; }
+.rating.gold { color: var(--gold); }
+.rating.silver { color: var(--text-secondary); }
+.rating.bronze { color: var(--orange); }
+
+.code-link {
+  font-family: "SF Mono", "Menlo", "Consolas", monospace;
+  color: var(--gold);
+  font-weight: 600;
+  font-size: 13px;
+}
+.fee-high { color: var(--red); }
+.fee-mid { color: var(--orange); }
+.fee-low { color: var(--green); }
+
+.warn-box {
+  background: rgba(251,146,60,0.08);
+  border: 1px solid rgba(251,146,60,0.25);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 24px 0;
+  font-size: 13px;
+  color: var(--orange);
+  line-height: 1.8;
+}
+.warn-box strong { color: #fff; }
+
+.info-box {
+  background: rgba(91,141,239,0.08);
+  border: 1px solid rgba(91,141,239,0.25);
+  border-radius: 8px;
+  padding: 18px 22px;
+  margin: 24px 0;
+  font-size: 13px;
+  color: var(--blue);
+  line-height: 1.8;
+}
+
+/* Comparison Card */
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+@media (max-width: 768px) { .comp-grid { grid-template-columns: 1fr; } }
+.comp-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 28px;
+}
+.comp-card.sp500-card { border-top: 3px solid var(--blue); }
+.comp-card.nasdaq-card { border-top: 3px solid var(--green); }
+.comp-card h3 { font-size: 18px; margin-bottom: 20px; }
+.comp-card.sp500-card h3 { color: var(--blue); }
+.comp-card.nasdaq-card h3 { color: var(--green); }
+.comp-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.comp-row:last-child { border-bottom: none; }
+.comp-row .key { color: var(--text-secondary); }
+.comp-row .val { color: #fff; font-weight: 500; }
+
+/* Fee Sim */
+.fee-bar {
+  height: 8px;
+  border-radius: 4px;
+  margin: 8px 0 2px;
+}
+.fee-bar.low { background: linear-gradient(90deg, var(--green), var(--blue)); }
+.fee-bar.mid { background: linear-gradient(90deg, var(--blue), var(--orange)); }
+.fee-bar.high { background: linear-gradient(90deg, var(--orange), var(--red)); }
+
+/* Footer */
+footer {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  padding: 32px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+footer p { margin: 4px 0; }
+
+/* Responsive nav highlight */
+.highlight { background: rgba(196,165,98,0.08); }
+
+/* Rec Table */
+.rec-table td:first-child { font-weight: 600; color: var(--gold); }
+
+/* Progress bar */
+.progress-bg { background: var(--border); border-radius: 4px; height: 6px; margin-top: 6px; }
+.progress-fill { height: 6px; border-radius: 4px; }
+.progress-fill.sp500-fill { background: var(--blue); }
+.progress-fill.nasdaq-fill { background: var(--green); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">J.P. Morgan Style Research</div>
+  <h1>标普500 & 纳斯达克100<br>被动指数基金全面调研</h1>
+  <p class="subtitle">中国大陆投资者可购买的QDII指数基金全景分析</p>
+  <div class="meta">
+    <div class="meta-item">报告日期 <span>2026-05-26</span></div>
+    <div class="meta-item">数据截止 <span>2026 Q1</span></div>
+    <div class="meta-item">产品总数 <span>69+</span></div>
+    <div class="meta-item">核实来源 <span>3方交叉</span></div>
+  </div>
+</header>
+
+<!-- Key Stats -->
+<section>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">标普500 产品线</div>
+        <div class="value">8</div>
+        <div class="change up">31个份额 | 4只ETF</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">纳斯达克100 产品线</div>
+        <div class="value">16</div>
+        <div class="change up">10只ETF | 50+份额</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">最低运作费率</div>
+        <div class="value">0.60%</div>
+        <div class="change up">嘉实/易方达/天弘/摩根纳指</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">最大单只规模</div>
+        <div class="value">276亿</div>
+        <div class="change">广发纳指ETF (159941)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Historical Trend Charts -->
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">历史走势对比</h2>
+    <p class="section-desc">近3年标普500指数与纳斯达克100指数周线走势（数据来源：Yahoo Finance，截至2026-05-22）</p>
+    <div class="chart-grid">
+      <div class="chart-box" id="sp500-chart-box">
+        <h4 class="sp500">S&P 500 Index</h4>
+        <div class="chart-stat" id="sp500-stat">加载中...</div>
+        <svg id="sp500-chart" viewBox="0 0 560 300" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="chart-box" id="nasdaq-chart-box">
+        <h4 class="nasdaq">NASDAQ 100 Index (NDX)</h4>
+        <div class="chart-stat" id="ndx-stat">加载中...</div>
+        <svg id="nasdaq-chart" viewBox="0 0 560 300" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Index Comparison -->
+<section>
+  <div class="container">
+    <h2 class="section-title">指数对比</h2>
+    <p class="section-desc">标普500与纳斯达克100在行业构成、风险收益特征上的核心差异</p>
+    <div class="comp-grid">
+      <div class="comp-card sp500-card">
+        <h3>S&P 500 标普500</h3>
+        <div class="comp-row"><span class="key">成分股数量</span><span class="val">~503</span></div>
+        <div class="comp-row"><span class="key">科技+通信+消费权重</span><span class="val">~50%</span></div>
+        <div class="comp-row"><span class="key">金融股权重</span><span class="val">~13%</span></div>
+        <div class="comp-row"><span class="key">近10年年化收益</span><span class="val">~13-14%</span></div>
+        <div class="comp-row"><span class="key">近10年年化波动</span><span class="val">~15-17%</span></div>
+        <div class="comp-row"><span class="key">历史最大回撤</span><span class="val">-56.8% (2008)</span></div>
+        <div class="comp-row"><span class="key">股息率</span><span class="val">~1.3%</span></div>
+        <div class="comp-row"><span class="key">适合投资者</span><span class="val">保守型、长期配置、定投新手</span></div>
+      </div>
+      <div class="comp-card nasdaq-card">
+        <h3>NASDAQ 100 纳斯达克100</h3>
+        <div class="comp-row"><span class="key">成分股数量</span><span class="val">~101</span></div>
+        <div class="comp-row"><span class="key">科技+通信+消费权重</span><span class="val">~87%</span></div>
+        <div class="comp-row"><span class="key">金融股权重</span><span class="val">0%（排除金融）</span></div>
+        <div class="comp-row"><span class="key">近10年年化收益</span><span class="val">~18-20%</span></div>
+        <div class="comp-row"><span class="key">近10年年化波动</span><span class="val">~20-24%</span></div>
+        <div class="comp-row"><span class="key">历史最大回撤</span><span class="val">-81.1% (2000)</span></div>
+        <div class="comp-row"><span class="key">股息率</span><span class="val">~0.7%</span></div>
+        <div class="comp-row"><span class="key">适合投资者</span><span class="val">进取型、卫星配置、接受高波动</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- S&P 500 Products -->
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">标普500 产品全览</h2>
+    <p class="section-desc">8条产品线，31个份额。含ETF、ETF联接、QDII指数、LOF、FOF。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>代码</th><th>基金名称</th><th>基金公司</th><th>类型</th><th>成立日期</th><th>规模(亿)</th><th>运作费率</th><th>近1年</th><th>近3年</th><th>评分</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="code-link">513500</td><td>博时标普500ETF</td><td>博时基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2013-12-05</td><td>209.41</td>
+            <td class="fee-mid">0.80%</td><td>18.35%</td><td>73.15%</td><td class="rating gold">92</td>
+          </tr>
+          <tr>
+            <td class="code-link">513650</td><td>标普500ETF南方</td><td>南方基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-03-23</td><td>45.75</td>
+            <td class="fee-mid">0.75%</td><td>18.36%</td><td>71.64%</td><td class="rating gold">88</td>
+          </tr>
+          <tr>
+            <td class="code-link">159655</td><td>标普500ETF华夏</td><td>华夏基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2022-10-12</td><td>33.86</td>
+            <td class="fee-mid">0.75%</td><td>17.69%</td><td>71.55%</td><td class="rating gold">86</td>
+          </tr>
+          <tr>
+            <td class="code-link">159612</td><td>标普500ETF国泰</td><td>国泰基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2022-05-09</td><td>7.45</td>
+            <td class="fee-mid">0.75%</td><td>18.30%</td><td>70.97%</td><td class="rating silver">78</td>
+          </tr>
+          <tr class="sub-header"><td colspan="10">━━ ETF 联接基金 ━━</td></tr>
+          <tr>
+            <td class="code-link">050025</td><td>博时标普500ETF联接A</td><td>博时基金</td>
+            <td><span class="tag tag-feeder">ETF联接</span></td><td>2012-06-14</td><td>59.27</td>
+            <td class="fee-mid">0.80%</td><td>17.72%</td><td>65.45%</td><td class="rating gold">83</td>
+          </tr>
+          <tr>
+            <td class="code-link">018064</td><td>华夏标普500ETF联接A</td><td>华夏基金</td>
+            <td><span class="tag tag-feeder">ETF联接</span></td><td>2023-05-10</td><td>3.39</td>
+            <td class="fee-mid">0.75%</td><td>16.88%</td><td>66.21%</td><td class="rating silver">72</td>
+          </tr>
+          <tr>
+            <td class="code-link">017028</td><td>国泰标普500ETF联接A</td><td>国泰基金</td>
+            <td><span class="tag tag-feeder">ETF联接</span></td><td>2022-11-02</td><td>1.32</td>
+            <td class="fee-mid">0.75%</td><td>15.68%</td><td>60.39%</td><td class="rating silver">68</td>
+          </tr>
+          <tr class="sub-header"><td colspan="10">━━ QDII 指数基金 / LOF / FOF ━━</td></tr>
+          <tr>
+            <td class="code-link">017641</td><td>摩根标普500指数(QDII)A</td><td>摩根资产</td>
+            <td><span class="tag tag-qdii">QDII指数</span></td><td>2023-04-06</td><td>36.62</td>
+            <td class="fee-low">0.65%</td><td>17.56%</td><td>62.89%</td><td class="rating gold">85</td>
+          </tr>
+          <tr>
+            <td class="code-link">161125</td><td>易方达标普500指数A</td><td>易方达基金</td>
+            <td><span class="tag tag-lof">QDII-LOF</span></td><td>2016-12-02</td><td>14.47</td>
+            <td class="fee-high">1.00%</td><td>17.45%</td><td>67.31%</td><td class="rating silver">76</td>
+          </tr>
+          <tr>
+            <td class="code-link">007721</td><td>天弘标普500发起(QDII-FOF)A</td><td>天弘基金</td>
+            <td><span class="tag tag-fof">QDII-FOF</span></td><td>2019-09-24</td><td>22.29</td>
+            <td class="fee-mid">0.80%</td><td>16.93%</td><td>60.51%</td><td class="rating silver">77</td>
+          </tr>
+          <tr>
+            <td class="code-link">096001</td><td>大成标普500等权重A ⚠️</td><td>大成基金</td>
+            <td><span class="tag tag-ew">等权重QDII</span></td><td>2011-03-23</td><td>5.81</td>
+            <td class="fee-high">1.20%</td><td>6.97%</td><td>28.95%</td><td class="rating bronze">55</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="warn-box">
+      <strong>⚠️ 重要提醒：</strong> 大成标普500等权重（096001）跟踪的是 <strong>S&P 500 Equal Weight Index</strong>，并非标准标普500指数。等权重意味着每个成分股约0.2%权重，小盘股影响被放大，与标准市值加权标普500走势差异极大。近5年收益仅34%，而标准标普500同期约90%。<strong>不可作为标普500的替代品。</strong>
+    </div>
+  </div>
+</section>
+
+<!-- NASDAQ 100 Products -->
+<section>
+  <div class="container">
+    <h2 class="section-title">纳斯达克100 产品全览</h2>
+    <p class="section-desc">16条产品线，10只ETF。涵盖场内ETF、ETF联接、QDII指数基金、LOF。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>代码</th><th>基金名称</th><th>基金公司</th><th>类型</th><th>成立日期</th><th>规模(亿)</th><th>运作费率</th><th>近1年</th><th>近3年</th><th>评分</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="code-link">159941</td><td>纳指ETF广发</td><td>广发基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2015-06-10</td><td>276.25</td>
+            <td class="fee-high">1.00%</td><td>27.91%</td><td>100.38%</td><td class="rating gold">93</td>
+          </tr>
+          <tr>
+            <td class="code-link">513100</td><td>纳指ETF国泰</td><td>国泰基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2013-04-25</td><td>155.34</td>
+            <td class="fee-mid">0.80%</td><td>28.23%</td><td>101.74%</td><td class="rating gold">94</td>
+          </tr>
+          <tr>
+            <td class="code-link">159501</td><td>纳指ETF嘉实</td><td>嘉实基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-05-31</td><td>96.11</td>
+            <td class="fee-low">0.60%</td><td>28.45%</td><td>—</td><td class="rating gold">90</td>
+          </tr>
+          <tr>
+            <td class="code-link">159659</td><td>纳斯达克100ETF招商</td><td>招商基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-04-12</td><td>75.63</td>
+            <td class="fee-low">0.65%</td><td>28.39%</td><td>98.30%</td><td class="rating gold">89</td>
+          </tr>
+          <tr>
+            <td class="code-link">159696</td><td>纳指ETF易方达</td><td>易方达基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-08-17</td><td>37.60</td>
+            <td class="fee-low">0.60%</td><td>28.69%</td><td>—</td><td class="rating gold">86</td>
+          </tr>
+          <tr>
+            <td class="code-link">159660</td><td>纳指ETF汇添富</td><td>汇添富基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-03-30</td><td>35.95</td>
+            <td class="fee-low">0.65%</td><td>28.46%</td><td>100.94%</td><td class="rating gold">86</td>
+          </tr>
+          <tr>
+            <td class="code-link">513390</td><td>纳指100ETF博时</td><td>博时基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-04-19</td><td>32.94</td>
+            <td class="fee-low">0.65%</td><td>28.43%</td><td>104.80%</td><td class="rating gold">85</td>
+          </tr>
+          <tr>
+            <td class="code-link">159513</td><td>纳斯达克100ETF大成</td><td>大成基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-07-03</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td class="code-link">513110</td><td>纳指ETF华泰柏瑞</td><td>华泰柏瑞</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-04-25</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td class="code-link">513870</td><td>纳指ETF富国</td><td>富国基金</td>
+            <td><span class="tag tag-etf">ETF</span></td><td>2023-05-17</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr class="sub-header"><td colspan="10">━━ 场外联接 / QDII指数基金（核心产品）━━</td></tr>
+          <tr>
+            <td class="code-link">270042</td><td>广发纳指100联接A</td><td>广发基金</td>
+            <td><span class="tag tag-feeder">ETF联接</span></td><td>2012-08-15</td><td>97.16</td>
+            <td class="fee-high">1.00%</td><td>27.12%</td><td>89.95%</td><td class="rating gold">84</td>
+          </tr>
+          <tr>
+            <td class="code-link">040046</td><td>华安纳指100联接A</td><td>华安基金</td>
+            <td><span class="tag tag-feeder">ETF联接</span></td><td>2013-08-02</td><td>47.03</td>
+            <td class="fee-mid">0.80%</td><td>27.63%</td><td>92.52%</td><td class="rating gold">83</td>
+          </tr>
+          <tr>
+            <td class="code-link">016452</td><td>南方纳指100指数A</td><td>南方基金</td>
+            <td><span class="tag tag-qdii">QDII指数</span></td><td>2022-11-29</td><td>31.11</td>
+            <td class="fee-low">0.65%</td><td>26.29%</td><td>87.96%</td><td class="rating gold">81</td>
+          </tr>
+          <tr>
+            <td class="code-link">018043</td><td>天弘纳指100指数A</td><td>天弘基金</td>
+            <td><span class="tag tag-qdii">QDII指数</span></td><td>2023-04-11</td><td>21.86</td>
+            <td class="fee-low">0.60%</td><td>26.68%</td><td>87.45%</td><td class="rating silver">79</td>
+          </tr>
+          <tr>
+            <td class="code-link">019172</td><td>摩根纳指100指数A</td><td>摩根资产</td>
+            <td><span class="tag tag-qdii">QDII指数</span></td><td>2023-09-25</td><td>21.78</td>
+            <td class="fee-low">0.60%</td><td>26.70%</td><td>—</td><td class="rating silver">78</td>
+          </tr>
+          <tr>
+            <td class="code-link">161130</td><td>易方达纳指100联接A</td><td>易方达基金</td>
+            <td><span class="tag tag-lof">QDII-LOF</span></td><td>2017-06-23</td><td>—</td><td class="fee-low">0.60%</td><td>—</td><td>—</td><td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- Fee Analysis -->
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">费率全景对比</h2>
+    <p class="section-desc">费率差距在20-30年维度下影响显著，选择低费率产品对长期投资者至关重要。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>运作费率</th><th>10年后(10万)</th><th>20年后</th><th>30年后</th><th>差异(vs 0.60%)</th><th>代表产品</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="fee-low">0.60%</td><td>24.55万</td><td>60.27万</td><td>147.92万</td><td>—</td><td>嘉实/易方达纳指ETF</td></tr>
+          <tr><td class="fee-low">0.65%</td><td>24.41万</td><td>59.58万</td><td>145.42万</td><td>-1.7%</td><td>摩根标普500、招商纳指</td></tr>
+          <tr><td class="fee-mid">0.75%</td><td>24.15万</td><td>58.30万</td><td>140.76万</td><td>-4.8%</td><td>南方/华夏标普500ETF</td></tr>
+          <tr><td class="fee-mid">0.80%</td><td>24.02万</td><td>57.66万</td><td>138.48万</td><td>-6.4%</td><td>博时标普500、国泰纳指</td></tr>
+          <tr><td class="fee-high">1.00%</td><td>23.57万</td><td>55.56万</td><td>130.96万</td><td>-11.5%</td><td>广发纳指、易方达标普LOF</td></tr>
+          <tr><td class="fee-high">1.20%</td><td>23.13万</td><td>53.52万</td><td>123.85万</td><td>-16.3%</td><td>大成标普500等权重</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted)">假设：指数年化收益率10%，不计申购/赎回费。实际收益受跟踪误差、汇率、QDII额度等因素影响。</p>
+  </div>
+</section>
+
+<!-- Recommendations -->
+<section>
+  <div class="container">
+    <h2 class="section-title">投资推荐</h2>
+    <p class="section-desc">基于规模、费率、流动性、历史表现等维度综合评估。</p>
+
+    <div class="comp-grid">
+      <div class="comp-card sp500-card">
+        <h3>标普500 推荐</h3>
+        <div class="comp-row"><span class="key">场内首选</span><span class="val">博时标普500ETF (513500)</span></div>
+        <div class="comp-row"><span class="key">场内备选</span><span class="val">南方标普500ETF (513650)</span></div>
+        <div class="comp-row"><span class="key">场外定投</span><span class="val">摩根标普500QDII A (017641)</span></div>
+        <div class="comp-row"><span class="key">老牌联接</span><span class="val">博时标普500联接A (050025)</span></div>
+        <div style="margin-top:16px;font-size:12px;color:var(--text-muted);">
+          场内首选理由：209亿规模、2013年成立、流动性最好<br>
+          场外首选理由：0.65%全场最低费率+支持定投
+        </div>
+      </div>
+      <div class="comp-card nasdaq-card">
+        <h3>纳斯达克100 推荐</h3>
+        <div class="comp-row"><span class="key">场内首选（老牌）</span><span class="val">纳指ETF国泰 (513100)</span></div>
+        <div class="comp-row"><span class="key">场内首选（规模）</span><span class="val">纳指ETF广发 (159941)</span></div>
+        <div class="comp-row"><span class="key">场内低费率</span><span class="val">纳指ETF嘉实 (159501)</span></div>
+        <div class="comp-row"><span class="key">场外首选</span><span class="val">广发纳指100联接A (270042)</span></div>
+        <div style="margin-top:16px;font-size:12px;color:var(--text-muted);">
+          场内首选理由：155亿规模+晨星4星+10年历史<br>
+          场外首选理由：97亿规模、2012年成立、支持定投
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>QDII额度提示：</strong> 截至2026年5月，多数标普500/纳指100 QDII产品处于限购状态。博时标普500系列、易方达标普500 LOF、华夏/国泰联接已暂停申购。对于限大额产品（摩根、天弘、广发、华安等），可通过每日定投逐步建仓。场内ETF二级市场交易不受限购影响。
+    </div>
+  </div>
+</section>
+
+<!-- Data Verification -->
+<section class="alt">
+  <div class="container">
+    <h2 class="section-title">数据核实记录</h2>
+    <p class="section-desc">本次调研的数据核实流程、遗漏发现与纠正记录。</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>遗漏项目</th><th>初版状态</th><th>纠正方式</th><th>状态</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>南方标普500ETF (513650)</td><td>完全遗漏</td><td>USA.xlsx + fundgz API核验</td><td>✅ 已补入</td></tr>
+          <tr><td>摩根标普500全系列 (4个份额)</td><td>完全遗漏</td><td>用户反馈 → 扫描017xxx范围</td><td>✅ 已补入</td></tr>
+          <tr><td>华夏标普500联接 (018064/65/66)</td><td>遗漏</td><td>USA.xlsx全部份额Sheet</td><td>✅ 已补入</td></tr>
+          <tr><td>国泰标普500联接 (017028/30)</td><td>遗漏</td><td>USA.xlsx全部份额Sheet</td><td>✅ 已补入</td></tr>
+          <tr><td>天弘标普500 FOF</td><td>标记"可能清盘"</td><td>fundgz返回空但F10确认存续</td><td>✅ 已纠正</td></tr>
+          <tr><td>博时联接美元份额 (013425/499)</td><td>遗漏</td><td>USA.xlsx全部份额Sheet</td><td>✅ 已补入</td></tr>
+          <tr><td>纳斯达克100全部产品</td><td>未涉及</td><td>USA.xlsx纳指主表+全部份额</td><td>✅ 新增完整章节</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>本报告仅作为信息整理和投资参考工具，不构成任何投资建议。</p>
+    <p>指数基金投资存在市场风险、汇率风险和流动性风险。过往业绩不代表未来表现。</p>
+    <p style="margin-top:12px;color:var(--gold)">数据来源：天天基金网 · 标普道琼斯指数公司 · 纳斯达克交易所 · USA.xlsx · Yahoo Finance</p>
+  </div>
+</footer>
+
+<script>
+// Historical data embedded from Yahoo Finance (weekly, last ~3 years)
+var SP500_DATA = [[1685937600,4298.86],[1686542400,4409.59],[1687147200,4348.33],[1687752000,4450.38],[1688356800,4398.95],[1688961600,4505.42],[1689566400,4536.34],[1690171200,4582.23],[1690776000,4478.03],[1691380800,4464.05],[1691985600,4369.71],[1692590400,4405.71],[1693195200,4515.77],[1693800000,4457.49],[1694404800,4450.32],[1695009600,4320.06],[1695614400,4288.05],[1696219200,4308.5],[1696824000,4327.78],[1697428800,4224.16],[1698033600,4117.37],[1698638400,4358.34],[1699246800,4415.24],[1699851600,4514.02],[1700456400,4559.34],[1701061200,4594.63],[1701666000,4604.37],[1702270800,4719.19],[1702875600,4754.63],[1703480400,4769.83],[1704085200,4697.24],[1704690000,4783.83],[1705294800,4839.81],[1705899600,4890.97],[1706504400,4958.61],[1707109200,5026.61],[1707714000,5005.57],[1708318800,5088.8],[1708923600,5137.08],[1709528400,5123.69],[1710129600,5117.09],[1710734400,5234.18],[1711339200,5254.35],[1711944000,5204.34],[1712548800,5123.41],[1713153600,4967.23],[1713758400,5099.96],[1714363200,5127.79],[1714968000,5222.68],[1715572800,5303.27],[1716177600,5304.72],[1716782400,5277.51],[1717387200,5346.99],[1717992000,5431.6],[1718596800,5464.62],[1719201600,5460.48],[1719806400,5567.19],[1720411200,5615.35],[1721016000,5505.0],[1721620800,5459.1],[1722225600,5346.56],[1722830400,5344.16],[1723435200,5554.25],[1724040000,5634.61],[1724644800,5648.4],[1725249600,5408.42],[1725854400,5626.02],[1726459200,5702.55],[1727064000,5738.17],[1727668800,5751.07],[1728273600,5815.03],[1728878400,5864.67],[1729483200,5808.12],[1730088000,5728.8],[1730696400,5995.54],[1731301200,5870.62],[1731906000,5969.34],[1732510800,6032.38],[1733115600,6090.27],[1733720400,6051.09],[1734325200,5930.85],[1734930000,5970.84],[1735534800,5942.47],[1736139600,5827.04],[1736744400,5996.66],[1737349200,6101.24],[1737954000,6040.53],[1738558800,6025.99],[1739163600,6114.63],[1739768400,6013.13],[1740373200,5954.5],[1740978000,5770.2],[1741579200,5638.94],[1742184000,5667.56],[1742788800,5580.94],[1743393600,5074.08],[1743998400,5363.36],[1744603200,5282.7],[1745208000,5525.21],[1745812800,5686.67],[1746417600,5659.91],[1747022400,5958.38],[1747627200,5802.82],[1748232000,5911.69],[1748836800,6000.36],[1749441600,5976.97],[1750046400,5967.84],[1750651200,6173.07],[1751256000,6279.35],[1751860800,6259.75],[1752465600,6296.79],[1753070400,6388.64],[1753675200,6238.01],[1754280000,6389.45],[1754884800,6449.8],[1755489600,6466.91],[1756094400,6460.26],[1756699200,6481.5],[1757304000,6584.29],[1757908800,6664.36],[1758513600,6643.7],[1759118400,6715.79],[1759723200,6552.51],[1760328000,6664.01],[1760932800,6791.69],[1761537600,6840.2],[1762146000,6728.8],[1762750800,6734.11],[1763355600,6602.99],[1763960400,6849.09],[1764565200,6870.4],[1765170000,6827.41],[1765774800,6834.5],[1766379600,6929.94],[1766984400,6858.47],[1767589200,6966.28],[1768194000,6940.01],[1768798800,6915.61],[1769403600,6939.03],[1770008400,6932.3],[1770613200,6836.17],[1771218000,6909.51],[1771822800,6878.88],[1772427600,6740.02],[1773028800,6632.19],[1773633600,6506.48],[1774238400,6368.85],[1774843200,6582.69],[1775448000,6816.89],[1776052800,7126.06],[1776657600,7165.08],[1777262400,7230.12],[1777867200,7398.93],[1778472000,7408.5],[1779076800,7473.47],[1779482708,7473.47]];
+
+var NDX_DATA = [[1685937600,14528.36],[1686542400,15083.92],[1687147200,14891.48],[1687752000,15179.21],[1688356800,15036.85],[1688961600,15565.6],[1689566400,15425.67],[1690171200,15750.93],[1690776000,15274.92],[1691380800,15028.07],[1691985600,14694.84],[1692590400,14941.83],[1693195200,15490.86],[1693800000,15280.23],[1694404800,15202.4],[1695009600,14701.1],[1695614400,14715.24],[1696219200,14973.24],[1696824000,14995.12],[1697428800,14560.88],[1698033600,14180.42],[1698638400,15099.49],[1699246800,15529.12],[1699851600,15837.99],[1700456400,15982.01],[1701061200,15997.58],[1701666000,16084.69],[1702270800,16623.45],[1702875600,16777.4],[1703480400,16825.93],[1704085200,16305.98],[1704690000,16832.92],[1705294800,17314.0],[1705899600,17421.01],[1706504400,17642.73],[1707109200,17962.41],[1707714000,17685.98],[1708318800,17937.61],[1708923600,18302.91],[1709528400,18018.45],[1710129600,17808.25],[1710734400,18339.44],[1711339200,18254.69],[1711944000,18108.46],[1712548800,18003.49],[1713153600,17037.65],[1713758400,17718.3],[1714363200,17890.8],[1714968000,18161.18],[1715572800,18546.23],[1716177600,18808.35],[1716782400,18536.65],[1717387200,19000.95],[1717992000,19659.8],[1718596800,19700.43],[1719201600,19682.87],[1719806400,20391.97],[1720411200,20331.49],[1721016000,19522.62],[1721620800,19023.66],[1722225600,18440.85],[1722830400,18513.1],[1723435200,19508.52],[1724040000,19720.87],[1724644800,19574.64],[1725249600,18421.31],[1725854400,19514.59],[1726459200,19791.49],[1727064000,20008.62],[1727668800,20035.02],[1728273600,20271.97],[1728878400,20324.04],[1729483200,20352.02],[1730088000,20033.14],[1730696400,21117.18],[1731301200,20394.13],[1731906000,20776.23],[1732510800,20930.37],[1733115600,21622.25],[1733720400,21780.25],[1734325200,21289.15],[1734930000,21473.02],[1735534800,21326.16],[1736139600,20847.58],[1736744400,21441.16],[1737349200,21774.01],[1737954000,21478.05],[1738558800,21491.31],[1739163600,22114.69],[1739768400,21614.08],[1740373200,20884.41],[1740978000,20201.37],[1741579200,19704.64],[1742184000,19753.97],[1742788800,19281.4],[1743393600,17397.7],[1743998400,18690.05],[1744603200,18258.09],[1745208000,19432.56],[1745812800,20102.61],[1746417600,20061.45],[1747022400,21427.94],[1747627200,20915.66],[1748232000,21340.99],[1748836800,21761.79],[1749441600,21631.04],[1750046400,21626.39],[1750651200,22534.2],[1751256000,22866.97],[1751860800,22780.6],[1752465600,23065.47],[1753070400,23272.25],[1753675200,22763.31],[1754280000,23611.27],[1754884800,23712.07],[1755489600,23498.12],[1756094400,23415.42],[1756699200,23652.44],[1757304000,24092.19],[1757908800,24626.25],[1758513600,24503.85],[1759118400,24785.52],[1759723200,24221.74],[1760328000,24817.95],[1760932800,25358.16],[1761537600,25858.13],[1762146000,25059.81],[1762750800,25008.24],[1763355600,24239.57],[1763960400,25434.89],[1764565200,25692.05],[1765170000,25196.73],[1765774800,25346.18],[1766379600,25644.39],[1766984400,25206.17],[1767589200,25766.26],[1768194000,25529.26],[1768798800,25605.47],[1769403600,25552.39],[1770008400,25075.77],[1770613200,24732.73],[1771218000,25012.62],[1771822800,24960.04],[1772427600,24643.02],[1773028800,24380.73],[1773633600,23898.15],[1774238400,23132.77],[1774843200,24045.53],[1775448000,25116.34],[1776052800,26672.43],[1776657600,27303.67],[1777262400,27710.36],[1777867200,29234.99],[1778472000,29125.2],[1779076800,29481.64],[1779484559,29481.64]];
+
+function renderChart(svgId, data, color, label) {
+  var svg = document.getElementById(svgId);
+  if (!svg) return;
+  var W = 560, H = 300, pad = {top:20,right:20,bottom:35,left:60};
+  var pw = W - pad.left - pad.right, ph = H - pad.top - pad.bottom;
+
+  var vals = data.map(function(d){return d[1];});
+  var minVal = Math.min.apply(null, vals), maxVal = Math.max.apply(null, vals);
+  var range = maxVal - minVal || 1;
+  minVal -= range * 0.05; maxVal += range * 0.05;
+  range = maxVal - minVal;
+
+  var xScale = function(i){return pad.left + (i/(data.length-1))*pw;};
+  var yScale = function(v){return pad.top + (1-(v-minVal)/range)*ph;};
+
+  // Grid lines
+  var gridHtml = '';
+  var steps = 5;
+  for (var i = 0; i <= steps; i++) {
+    var y = pad.top + (i/steps)*ph;
+    var val = maxVal - (i/steps)*range;
+    gridHtml += '<line x1="'+pad.left+'" y1="'+y+'" x2="'+(W-pad.right)+'" y2="'+y+'" stroke="#2a3040" stroke-width="0.5"/>';
+    gridHtml += '<text x="'+(pad.left-8)+'" y="'+(y+4)+'" text-anchor="end" fill="#6b7280" font-size="10" font-family="SF Mono,Menlo,Consolas,monospace">'+Math.round(val).toLocaleString()+'</text>';
+  }
+
+  // Build path
+  var pathD = '';
+  for (var i = 0; i < data.length; i++) {
+    var px = xScale(i), py = yScale(data[i][1]);
+    pathD += (i===0?'M':'L') + px + ',' + py;
+  }
+
+  // Area fill
+  var areaD = pathD + ' L' + xScale(data.length-1) + ',' + (pad.top+ph) + ' L' + pad.left + ',' + (pad.top+ph) + ' Z';
+
+  var now = data[data.length-1][1];
+  var first = data[0][1];
+  var pctChange = ((now-first)/first*100).toFixed(1);
+  var changeClass = pctChange >= 0 ? 'up' : 'down';
+  var changeSign = pctChange >= 0 ? '+' : '';
+
+  // Date labels (every ~6 months)
+  var labelHtml = '';
+  var monthsShown = {};
+  for (var i = 0; i < data.length; i += Math.floor(data.length/6)) {
+    var d = new Date(data[i][0]*1000);
+    var key = d.getFullYear()+'-'+d.getMonth();
+    if (!monthsShown[key]) {
+      monthsShown[key] = true;
+      var label = (d.getMonth()+1)+'/'+d.getFullYear().toString().slice(2);
+      labelHtml += '<text x="'+xScale(i)+'" y="'+(H-pad.bottom+18)+'" text-anchor="middle" fill="#6b7280" font-size="10">'+label+'</text>';
+      labelHtml += '<line x1="'+xScale(i)+'" y1="'+(pad.top+ph)+'" x2="'+xScale(i)+'" y2="'+(pad.top+ph+5)+'" stroke="#2a3040" stroke-width="0.5"/>';
+    }
+  }
+
+  svg.innerHTML = gridHtml +
+    '<defs><linearGradient id="grad-'+svgId+'" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0%" stop-color="'+color+'" stop-opacity="0.2"/>'+
+    '<stop offset="100%" stop-color="'+color+'" stop-opacity="0.02"/>'+
+    '</linearGradient></defs>'+
+    '<path d="'+areaD+'" fill="url(#grad-'+svgId+')"/>'+
+    '<path d="'+pathD+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'+
+    labelHtml;
+
+  // Update stat
+  document.getElementById(svgId==='sp500-chart'?'sp500-stat':'ndx-stat').innerHTML =
+    '当前 ' + now.toLocaleString() + ' | 区间 '+changeSign+pctChange+'% | 最低 ' + Math.round(minVal).toLocaleString() + ' | 最高 ' + Math.round(maxVal).toLocaleString();
+}
+
+renderChart('sp500-chart', SP500_DATA, '#5b8def', 'S&P 500');
+renderChart('nasdaq-chart', NDX_DATA, '#34d399', 'NASDAQ 100');
+</script>
+
+</body>
+</html>
